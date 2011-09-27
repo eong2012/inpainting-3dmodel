@@ -17,5 +17,5 @@ I have tried to remove around 400Megs of data from these directories and shifted
 
 RULES OF THUMB: 
 * Do not dumb data on the git repository - it will kill the space we have!
-* most of the git stuff can be conveniently done through the "git gui" command
+* most of the git stuff can be conveniently done through the "git gui" command.
 * Maintain all data (like images we are using) on Dropbox.
