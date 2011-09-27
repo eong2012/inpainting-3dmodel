@@ -43,10 +43,12 @@ function OneShot3dEfficient(ImgPath, OutPutFolder,...
      Flag...  % All Flags 1) intermediate storage flag
      );
 
+rootpath = fileparts(fileparts(fileparts(which(mfilename))));
+ 
 if ~isdeployed
-  addpath(genpath('../../LearningCode'));
- addpath(genpath('../../third_party'));
- addpath(genpath('../../bin/mex'));
+  addpath(genpath(fullfile(rootpath, 'LearningCode')));
+ addpath(genpath(fullfile(rootpath, 'third_party')));
+ addpath(genpath(fullfile(rootpath, 'bin/mex')));
  end
 
 
@@ -72,15 +74,15 @@ if ~isdeployed
   elseif nargin < 3
      taskName = '';
      Flag = [];
-     ScratchFolder = ['/home/ahumayun/cs7495/code/make3d/scratch/IMStorage' ];
-     ParaFolder = '/home/ahumayun/cs7495/code/make3d/params';
+     ScratchFolder = fullfile(rootpath, 'scratch/IMStorage');
+     ParaFolder = fullfile(rootpath, 'params');
   elseif nargin < 4
      Flag = [];
-     ScratchFolder = ['/home/ahumayun/cs7495/code/make3d/scratch/IMStorage' ];
-     ParaFolder = '/home/ahumayun/cs7495/code/make3d/params';
+     ScratchFolder = fullfile(rootpath, 'scratch/IMStorage');
+     ParaFolder = fullfile(rootpath, 'params');
   elseif nargin < 5
      Flag = [];
-     ParaFolder = '/home/ahumayun/cs7495/code/make3d/params';
+     ParaFolder = fullfile(rootpath, 'params');
   elseif nargin < 6
      Flag = [];
   end
