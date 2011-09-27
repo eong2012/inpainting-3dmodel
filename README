@@ -1,0 +1,21 @@
+1. Create a ~/.netrc file:
+machine code.google.com
+login [gmail address]
+password [google code password]
+
+Your Google code password is at https://code.google.com/hosting/settings
+
+2. Pull code:
+git clone https://[your Google ID]@code.google.com/p/inpainting-3dmodel/ .
+
+3. The code has two directories currently:
+./criminisi_inpainting - Criminisi 2003~4 code for inpainting\obj filling
+./make3d - saxena 2005~9 code for single image 3D reconstruction
+
+I have tried to remove around 400Megs of data from these directories and shifted it to [dropbox]/CS7495_Proj1/Data. I have also created a gatech_data directory to hold any data we collect.
+
+
+RULES OF THUMB: 
+* Do not dumb data on the git repository - it will kill the space we have!
+* most of the git stuff can be conveniently done through the "git gui" command
+* Maintain all data (like images we are using) on Dropbox.
