@@ -53,6 +53,8 @@ end
 % Seed 'rand' for reproducible results (good for testing)
 rand('state',0);
 
+iter = 1;
+
 % Loop until entire fill region has been covered
 while any(fillRegion(:))
     fprintf(1, '%d pixels remain to be filled in\n', nnz(fillRegion(:)));
@@ -101,8 +103,8 @@ while any(fillRegion(:))
   if nargout==6
     ind2 = ind;
     ind2(fillRegion) = 1;
-    fillMovie(iter).cdata=uint8(ind2img(ind2,origImg)); 
-    fillMovie(iter).colormap=[];
+    %fillMovie(iter).cdata=uint8(ind2img(ind2,origImg)); 
+    %fillMovie(iter).colormap=[];
   end
   iter = iter+1;
 end
@@ -161,7 +163,18 @@ s=size(img); ind=reshape(1:s(1)*s(2),s(1),s(2));
 % value for knowing which pixels are to be filled.
 %---------------------------------------------------------------------
 function [img,fillImg,fillRegion] = loadimgs(imgFilename,fillFilename,fillColor)
-img = imread(imgFilename); fillImg = imread(fillFilename);
+% read in file if filename provided otherwise suppose a matrix
+if ~ischar(imgFilename)
+    img = imgFilename;
+else
+    img = imread(imgFilename);
+end
+if ~ischar(fillFilename)
+    fillImg = fillFilename;
+else
+    fillImg = imread(fillFilename);
+end
+
 if ndims(fillImg) == 3
     fillRegion = fillImg(:,:,1)==fillColor(1) & ...
         fillImg(:,:,2)==fillColor(2) & fillImg(:,:,3)==fillColor(3);
