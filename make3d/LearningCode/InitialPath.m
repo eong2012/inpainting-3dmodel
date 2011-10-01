@@ -54,7 +54,7 @@ end
 
 if CompileFlag
 % makefile and create every binary file in bin folder
-  system(['mkdir ' fullfile(filepath, 'bin')]);
+  system(['mkdir ' fullfile(regexprep(filepath, ' ', '\\ '), 'bin')]);
 
   InitialFolder2 = pwd;
   cd(fullfile(filepath, 'bin'));
