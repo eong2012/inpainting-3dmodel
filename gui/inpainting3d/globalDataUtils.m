@@ -44,17 +44,21 @@ function [ handles ] = guiDataDefaults( handles )
         gui_data = handles.gui_data;
     end
     
+    % used to set the position of the axes
     pos = get(handles.inpainting3d_gui, 'Position');
     pos2 = get(handles.pushbutton_loadim,'Position');
     gui_data.axes_loc = [30 30 pos2(1)-60 pos(4)-60];
     
+    % file extensions available during file open 
     gui_data.im_ext_allowed = {'*.png;*.jpg;*.bmp;*.pgm;*.tif', 'All Image Files'; '*.*','All Files'};
     
+    % tags used for axes and images
     gui_data.axes_tag_prefix = 'inp3d_axes_';
     gui_data.axes_txt_prefix = 'inp3d_txt_axes_';
     gui_data.im_tag_prefix = 'inp3d_im_';
     gui_data.mask_tag_prefix = 'inp3d_mask_';
     
+    % regexp used for searching for gui objects
     gui_data.axes_search_re = ['^' gui_data.axes_tag_prefix '(\d+)$'];
     
     gui_data.curr_dir = pwd;
@@ -85,4 +89,5 @@ function [ handles ] = reInitMaskData( handles )
     % store the mask image
     handles.user_data.filepath_input_mask = '';
     handles.user_data.input_mask = [];
+    handles.user_data.display_mask = [];
 end

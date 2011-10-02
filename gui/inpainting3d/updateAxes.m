@@ -28,8 +28,8 @@ function updateAxes(handles, threshold)
             hold(curr_axes_h, 'on');
 %         end
 
-        % display all the images
-        image(handles.user_data.input_mask, 'AlphaData',threshold, 'Parent',curr_axes_h, 'Tag',[handles.gui_data.mask_tag_prefix num2str(idx)]);
+        % display the FG mask
+        image(handles.user_data.display_mask, 'AlphaData',threshold, 'Parent',curr_axes_h, 'Tag',[handles.gui_data.mask_tag_prefix num2str(idx)]);
 
         set(curr_axes_h, 'DataAspectRatio', [1 1 1], 'Box','off', 'XColor',get(handles.inpainting3d_gui,'Color'), 'YColor',get(handles.inpainting3d_gui,'Color'), ...
                     'Units','pixels', 'Tag',tag_name, 'XTick',[], 'YTick',[], 'ZTick',[]);

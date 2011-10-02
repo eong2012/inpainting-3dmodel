@@ -91,6 +91,7 @@ function btn_load_mask_Callback(hObject, eventdata, handles)
     % change to the latest file
     handles.user_data.filepath_input_mask = fullfile(folder_name, file_name);
     handles.user_data.input_mask = input_mask;
+    handles.user_data.display_mask = repmat(input_mask, [1 1 3]);
     
     % enable the slider control
     globalGuiUtils('enableDisableSliderImFG', handles, 1)
