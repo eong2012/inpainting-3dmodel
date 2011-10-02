@@ -1,5 +1,5 @@
-function [ varargout ] = globalDataUtils( varargin )
-% utils to set parameters
+function [ varargout ] = globalGuiUtils( varargin )
+% utils to set GUI
 %   first parameter should be the function name; following that all
 %   parameters are sent as parameters to the function
 
@@ -48,7 +48,36 @@ function [ handles ] = initGui( handles, hObject, eventdata )
     set(handles.slider_im_fg, 'Callback', @(hObject,eventdata) imfgSliderCallbacks('imfg_slider_Callback', hObject, eventdata, guidata(hObject)) );
     set(handles.slider_im_fg, 'CreateFcn', @(hObject,eventdata) imfgSliderCallbacks('imfg_slider_CreateFcn', hObject, eventdata, guidata(hObject)) );
     addlistener(handles.slider_im_fg, 'Action', @(hObject,eventdata) imfgSliderCallbacks('imfg_slider_Action', hObject, eventdata, guidata(hObject)) );
-    set(handles.slider_im_fg, 'Enable','off');
-    set(handles.text_slider_im, 'Enable','off');
-    set(handles.text_slider_fg, 'Enable','off');
+    enableDisableSliderImFG(handles, 0)
+end
+
+
+function enableDisableSliderImFG(handles, enable)
+% enable or disable the slider controls
+    if enable
+        enable = 'on';
+    else
+        enable = 'off';
+    end
+
+    set(handles.slider_im_fg, 'Enable',enable);
+    set(handles.text_slider_im, 'Enable',enable);
+    set(handles.text_slider_fg, 'Enable',enable);
+end
+
+
+function recursiveHandleDelete(handle_list)
+% recursively (by going down the children tree) deletes all children handles in a list
+
+    if isempty(handle_list)
+        return;
+    end
+
+    for hndl = handle_list
+        if ishandle(hndl)
+            children_hndls = get(hndl, 'Children');
+            recursiveHandleDelete(children_hndls);
+            delete(hndl);
+        end
+    end
 end

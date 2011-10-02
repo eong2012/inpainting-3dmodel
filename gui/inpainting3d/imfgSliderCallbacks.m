@@ -17,9 +17,10 @@ function imfg_slider_CreateFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
-% Hint: slider controls usually have a light gray background.
-if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor',[.9 .9 .9]);
+    % Hint: slider controls usually have a light gray background.
+    if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor',[.9 .9 .9]);
+    end
 end
 
 
@@ -29,21 +30,23 @@ function imfg_slider_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+    % Hints: get(hObject,'Value') returns position of slider
+    %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
-%obtains the slider value from the slider component
-slider_value = get(handles.threshold_slider, 'Value');
- 
-%puts the slider value into the edit text component
-%set(handles.threshold_text, 'String', num2str(slider_value));
+    %obtains the slider value from the slider component
+    slider_value = get(handles.slider_im_fg, 'Value');
 
-% Update handles structure
-guidata(hObject, handles);
+    %puts the slider value into the edit text component
+    %set(handles.threshold_text, 'String', num2str(slider_value));
 
-displayImage(handles, slider_value);
+    % Update handles structure
+    guidata(hObject, handles);
+
+    updateAxes(handles, slider_value);
+end
 
 
 % --- Executes on slider's inbetween dragging movement.
 function imfg_slider_Action(hObject, eventdata, handles)
-imfg_slider_Callback(hObject, eventdata, handles);
+    imfg_slider_Callback(hObject, eventdata, handles);
+end

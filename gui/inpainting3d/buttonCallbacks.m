@@ -41,22 +41,22 @@ function btn_load_im_Callback(hObject, evendata, handles)
     handles.user_data.filepath_input_im = fullfile(folder_name, file_name);
     handles.user_data.input_im = input_im;
     
-    % enable FG button
+    % enable FG button and disable the slider
     set(handles.pushbutton_fgmask, 'Enable','on');
+    globalGuiUtils('enableDisableSliderImFG', handles, 0);
+    
+    % reset mask data
+    [ handles ] = globalDataUtils('reInitMaskData', handles );
     
     % show the image
-    curr_axes_h = handles.([handles.gui_data.axes_tag_prefix '1']);
-    tag_name = get(curr_axes_h, 'Tag');
-    image(handles.user_data.input_im, 'Parent', curr_axes_h);
-    set(curr_axes_h, 'DataAspectRatio', [1 1 1], 'Box','off', 'XColor',get(handles.inpainting3d_gui,'Color'), 'YColor',get(handles.inpainting3d_gui,'Color'), ...
-                'Units','pixels', 'Tag',tag_name, 'XTick',[], 'YTick',[], 'ZTick',[]);
-            
+    globalAxesUtils('setBgImageForAllAxes', handles);
+    
     % update handles structure
     guidata(hObject, handles);
 end
 
 
-function btn_load_mask_Callback(hObject, evendata, handles)
+function btn_load_mask_Callback(hObject, eventdata, handles)
     not_done = 1;
     msg_prefix = '[unknown action]';
 
@@ -92,6 +92,12 @@ function btn_load_mask_Callback(hObject, evendata, handles)
     handles.user_data.filepath_input_mask = fullfile(folder_name, file_name);
     handles.user_data.input_mask = input_mask;
     
+    % enable the slider control
+    globalGuiUtils('enableDisableSliderImFG', handles, 1)
+    
     % update handles structure
     guidata(hObject, handles);
+    
+    % update the images on the axes
+    imfgSliderCallbacks('imfg_slider_Callback', hObject, eventdata, handles);
 end
