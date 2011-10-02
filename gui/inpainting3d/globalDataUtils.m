@@ -12,7 +12,6 @@ function [ varargout ] = globalDataUtils( varargin )
 end
 
 
-
 function [ handles ] = setUserDataDefaults( handles )
 % set user data
 

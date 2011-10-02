@@ -26,7 +26,7 @@ function btn_load_im_Callback(hObject, evendata, handles)
                 return;
             end
             
-            input_im = imread(fullfile(folder_name, file_name));
+            input_im = im2uint8(imread(fullfile(folder_name, file_name)));
             
             not_done = 0;
         catch exception
@@ -44,13 +44,20 @@ function btn_load_im_Callback(hObject, evendata, handles)
     % enable FG button
     set(handles.pushbutton_fgmask, 'Enable','on');
     
+    % show the image
+    curr_axes_h = handles.([handles.gui_data.axes_tag_prefix '1']);
+    tag_name = get(curr_axes_h, 'Tag');
+    image(handles.user_data.input_im, 'Parent', curr_axes_h);
+    set(curr_axes_h, 'DataAspectRatio', [1 1 1], 'Box','off', 'XColor',get(handles.inpainting3d_gui,'Color'), 'YColor',get(handles.inpainting3d_gui,'Color'), ...
+                'Units','pixels', 'Tag',tag_name, 'XTick',[], 'YTick',[], 'ZTick',[]);
+            
     % update handles structure
     guidata(hObject, handles);
 end
 
 
 function btn_load_mask_Callback(hObject, evendata, handles)
-not_done = 1;
+    not_done = 1;
     msg_prefix = '[unknown action]';
 
     while not_done
@@ -64,7 +71,13 @@ not_done = 1;
             end
             
             input_mask = imread(fullfile(folder_name, file_name));
+            assert(ndims(input_mask)==2, 'buttonCallback:InvalidMask', 'The mask input should be 2-dimensional');
+            
             input_mask = logical(input_mask);
+            
+            % check if input mask is the same size as the input image
+            assert(size(input_mask,1)==size(handles.user_data.input_im,1) && size(input_mask,2)==size(handles.user_data.input_im,2), ...
+                'buttonCallback:InvalidMask', 'The mask input is not the same size as the image');
             
             not_done = 0;
         catch exception
