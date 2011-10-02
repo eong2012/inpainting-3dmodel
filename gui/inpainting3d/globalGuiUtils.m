@@ -44,4 +44,11 @@ function [ handles ] = initGui( handles, hObject, eventdata )
     set(handles.pushbutton_loadim, 'Callback',@(hObject,eventdata) buttonCallbacks('btn_load_im_Callback', hObject, eventdata, guidata(hObject)));
     set(handles.pushbutton_fgmask, 'Callback',@(hObject,eventdata) buttonCallbacks('btn_load_mask_Callback', hObject, eventdata, guidata(hObject)));
     
+    % Set callbacks for slider_im_fg
+    set(handles.slider_im_fg, 'Callback', @(hObject,eventdata) imfgSliderCallbacks('imfg_slider_Callback', hObject, eventdata, guidata(hObject)) );
+    set(handles.slider_im_fg, 'CreateFcn', @(hObject,eventdata) imfgSliderCallbacks('imfg_slider_CreateFcn', hObject, eventdata, guidata(hObject)) );
+    addlistener(handles.slider_im_fg, 'Action', @(hObject,eventdata) imfgSliderCallbacks('imfg_slider_Action', hObject, eventdata, guidata(hObject)) );
+    set(handles.slider_im_fg, 'Enable','off');
+    set(handles.text_slider_im, 'Enable','off');
+    set(handles.text_slider_fg, 'Enable','off');
 end
