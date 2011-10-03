@@ -34,6 +34,9 @@ function btn_load_im_Callback(hObject, evendata, handles)
         end
     end
 
+    % reset to the data and GUI state
+    [ handles ] = globalGuiUtils('guiDataResetBeforeNewIm', handles);
+    
     % change to latest directory
     handles.gui_data.curr_dir = folder_name;
     
@@ -41,12 +44,8 @@ function btn_load_im_Callback(hObject, evendata, handles)
     handles.user_data.filepath_input_im = fullfile(folder_name, file_name);
     handles.user_data.input_im = input_im;
     
-    % enable FG button and disable the slider
+    % enable FG button
     set(handles.pushbutton_fgmask, 'Enable','on');
-    globalGuiUtils('enableDisableSliderImFG', handles, 0);
-    
-    % reset mask data
-    [ handles ] = globalDataUtils('reInitMaskData', handles );
     
     % show the image
     globalAxesUtils('setBgImageForAllAxes', handles);
@@ -93,8 +92,9 @@ function btn_load_mask_Callback(hObject, eventdata, handles)
     handles.user_data.input_mask = input_mask;
     handles.user_data.display_mask = repmat(input_mask, [1 1 3]);
     
-    % enable the slider control
-    globalGuiUtils('enableDisableSliderImFG', handles, 1)
+    % enable all relevant GUI objects
+    globalGuiUtils('enableDisableSliderImFG', handles, 1);
+    globalGuiUtils('enableDisableInpaintingPanel', handles, 1);
     
     % update handles structure
     guidata(hObject, handles);
