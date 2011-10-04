@@ -105,5 +105,5 @@ function pushbutton_inpainting_save_Callback(hObject, eventdata, handles)
     end
     
     % write the inpainted output
-    imwrite(handles.user_data.inpainting_output, fullfile(folder_name, file_name));
+    imwrite(handles.user_data.inpainting_output{1}, fullfile(folder_name, file_name));
 end
