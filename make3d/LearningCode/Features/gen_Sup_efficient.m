@@ -36,7 +36,7 @@
 % *  permissions and limitations under the License.
 % *
 % */
-function [MedSup, Sup, Default SupNeighborTableFlag]=gen_Sup_efficient(Default, img, fgmask, SelectSegmentationPara);
+function [MedSup, Sup, FgSupidx, Default SupNeighborTableFlag]=gen_Sup_efficient(Default, img, fgmask, SelectSegmentationPara);
 % this function generate superpixel using default parameter
 % but can also change to manually input parameter
 
@@ -134,6 +134,11 @@ for j = 1:3% number of scale of superpixel
            SparseIndex(Unique_a) = 1:size(Unique_a);
            Sup{j} = full(SparseIndex(a));
         end
+        
+        % get the FG indexes
+        temp = Sup{j}(fgmask_rsz);
+        FgSupidx{j} = unique(temp);
+        
         clear a SparseIndex Unique_a ma;
 
 

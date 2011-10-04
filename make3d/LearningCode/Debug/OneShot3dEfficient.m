@@ -125,20 +125,6 @@ fgmask = imread(fgMaskPath);
 %	end
 disp([ num2str( toc(startTime) ) ' seconds.']);
 
-
-fgImg = imread('mask.png');
-
-redchannel = img(:,:,1);
-greenchannel = img(:,:,2);
-bluechannel = img(:,:,3);
-
-redchannel(fgImg) = 0;
-greenchannel(fgImg) = 0;
-bluechannel(fgImg) = 0;
-
-img= cat(3, redchannel, greenchannel, bluechannel);
-
-
 if Default.Flag.DisplayFlag
     figure;
     set(gcf, 'Name', 'Input Image');
@@ -151,7 +137,7 @@ end
 
 % 1) Basic Superpixel generation and Sup clean
 fprintf('Creating Superpixels...           ');
-[MedSup, Sup, Default, SupNeighborTable] = gen_Sup_efficient(Default, img, fgmask);
+[MedSup, Sup, FgSupidx, Default, SupNeighborTable] = gen_Sup_efficient(Default, img, fgmask);
 disp([ num2str( toc(startTime) ) ' seconds.']);
 
 % 2) Texture Features and inner multiple Sups generation
