@@ -16,6 +16,7 @@ function [ handles ] = initGui( handles, hObject, eventdata )
     % create the main axes and its overlay text
     axes_tag = [handles.gui_data.axes_tag_prefix '1'];
     
+    % create the main axes and paint the test on top of it
     h1 = axes('Parent',handles.inpainting3d_gui, ...
               'Box', 'on', ...
               'Units','pixels', ...
@@ -50,6 +51,13 @@ function [ handles ] = initGui( handles, hObject, eventdata )
     set(handles.pushbutton_inpainting_exec, 'Callback', @(hObject,eventdata) inpaintingGuiCallbacks('pushbutton_inpainting_exec_Callback', hObject, eventdata, guidata(hObject)) );
     set(handles.pushbutton_save_inpainting, 'Callback', @(hObject,eventdata) inpaintingGuiCallbacks('pushbutton_inpainting_save_Callback', hObject, eventdata, guidata(hObject)) );
     
+    % Set callbacks for 3D reconstruction GUI
+    set(handles.checkbox_3dreconstr_inp, 'Callback', @(hObject,eventdata) reconstr3DGuiCallbacks('inpainting_checkbox_Callback', hObject, eventdata, guidata(hObject)) );
+    set(handles.edit_3dreconstr_inp_scale, 'Callback', @(hObject,eventdata) reconstr3DGuiCallbacks('scale_text_Callback', hObject, eventdata, guidata(hObject)) );
+    set(handles.edit_3dreconstr_inp_scale, 'CreateFcn', @(hObject,eventdata) reconstr3DGuiCallbacks('scale_text_CreateFcn', hObject, eventdata, guidata(hObject)) );
+    set(handles.pushbutton_3dreconstr_exec, 'Callback', @(hObject,eventdata) reconstr3DGuiCallbacks('pushbutton_3dreconstr_exec_Callback', hObject, eventdata, guidata(hObject)) );
+    set(handles.pushbutton_3dreconstr_vrml, 'Callback', @(hObject,eventdata) reconstr3DGuiCallbacks('pushbutton_3dreconstr_view_Callback', hObject, eventdata, guidata(hObject)) );
+    
     % reset to the state when a new image is being loaded
     [ handles ] = guiDataResetBeforeNewIm(handles);
 end
@@ -63,6 +71,9 @@ function [ handles ] = guiDataResetBeforeNewIm(handles)
     
     % disable the inpainting objects
     enableDisableInpaintingPanel(handles, 0);
+    
+    % disable the 3D reconstruction objects
+    enableDisable3DReconstrPanel(handles, 0);
     
     % disable the VRML button
     set(handles.pushbutton_openvrml, 'Enable','off');
@@ -94,6 +105,26 @@ function enableDisableInpaintingPanel(handles, enable)
     
     % deactive save button
     set(handles.pushbutton_save_inpainting, 'Enable','off');
+end
+
+
+function enableDisable3DReconstrPanel(handles, enable)
+% enable or disable the slider controls
+    
+    enable = enableParamConvert(enable);
+    recursiveHandleEnable(get(handles.uipanel_reconstr3d,'Children'), enable);
+    
+    % deactive view VRML button
+    set(handles.pushbutton_3dreconstr_vrml, 'Enable','off');
+    
+    % set inpainting checkbox elements accordingly
+    if get(handles.checkbox_3dreconstr_inp, 'Value') && strcmp(get(handles.checkbox_3dreconstr_inp, 'Enable'),'on')
+        set(handles.text_3dreconstr_inp_scaling, 'Enable','on');
+        set(handles.edit_3dreconstr_inp_scale, 'Enable','on');
+    else
+        set(handles.text_3dreconstr_inp_scaling, 'Enable','off');
+        set(handles.edit_3dreconstr_inp_scale, 'Enable','off');
+    end
 end
 
 

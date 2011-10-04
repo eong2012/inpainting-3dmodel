@@ -30,7 +30,7 @@ function [ handles ] = setUserDataDefaults( handles )
     
     user_data.viewer3d_exec = '/usr/local/bin/view3dscene/view3dscene [params] [filepath]';
     user_data.viewer3d_exec_type = 'SYSTEM';
-    user_data.viewer3d_params = {'--help'};
+    user_data.viewer3d_params = {};
     
     user_data.inpainting_exec = '[[inpainted_im],[input_im],[inpaint_mask]] = inpaint([input_im],[inpaint_mask] [params]);';
     user_data.inpainting_exec_type = 'MATLAB';
@@ -38,6 +38,13 @@ function [ handles ] = setUserDataDefaults( handles )
     user_data.inpainting_run_dir = fullfile(root_path, 'criminisi_inpainting');
     user_data.inpainting_prerun_cmds = {};
     user_data.inpainting_postrun_cmds = {'inpainted_im = uint8(inpainted_im);'};
+    
+    user_data.reconstr3d_exec = 'OneShot3dEfficient([input_filepath], [output_path] [params]);';
+    user_data.reconstr3d_exec_type = 'MATLAB';
+    user_data.reconstr3d_params = {'''gui_test'''};
+    user_data.reconstr3d_run_dir = fullfile(root_path, 'make3d', 'scratch');
+    user_data.reconstr3d_prerun_cmds = {'addpath ../LearningCode', 'InitialPath(false);'};
+    user_data.reconstr3d_postrun_cmds = {};
     
     user_data.temp_dir = 'sfsd';
     
@@ -136,7 +143,9 @@ function [ handles ] = reInitOutputs( handles )
 
     % store the outputs
     handles.user_data.inpainting_output = [];
+    handles.user_data.inpainting_output_params = {};
     handles.user_data.reconstr3d_vrml_output = [];
-    handles.user_data.reconstr3d_inpaint_vrml_output = [];
+    handles.user_data.reconstr3d_vrml_output_params = {};
     handles.user_data.reconstr3d_inpaint_output = [];
+    handles.user_data.reconstr3d_inpaint_output_params = {};
 end

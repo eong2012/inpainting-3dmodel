@@ -47,6 +47,9 @@ function btn_load_im_Callback(hObject, evendata, handles)
     % enable FG button
     set(handles.pushbutton_fgmask, 'Enable','on');
     
+    % enable the 3D reconstruction button
+    set(handles.pushbutton_3dreconstr_exec, 'Enable','on');
+    
     % show the image
     globalAxesUtils('setBgImageForAllAxes', handles);
     
@@ -95,6 +98,7 @@ function btn_load_mask_Callback(hObject, eventdata, handles)
     % enable all relevant GUI objects
     globalGuiUtils('enableDisableSliderImFG', handles, 1);
     globalGuiUtils('enableDisableInpaintingPanel', handles, 1);
+    globalGuiUtils('enableDisable3DReconstrPanel', handles, 1);
     
     % update handles structure
     guidata(hObject, handles);

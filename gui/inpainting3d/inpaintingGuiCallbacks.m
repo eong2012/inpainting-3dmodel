@@ -1,5 +1,5 @@
 function [ varargout ] = inpaintingGuiCallbacks( varargin )
-% callabacks for inpainting GUI
+% callbacks for inpainting GUI
 %   first parameter should be the function name; following that all
 %   parameters are sent as parameters to the function
 
@@ -11,7 +11,21 @@ function [ varargout ] = inpaintingGuiCallbacks( varargin )
 end
 
 
-% --- Executes on threshold text change
+% --- Executes during object creation, after setting all properties.
+function scale_text_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to threshold_text (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+    % Hint: edit controls usually have a white background on Windows.
+    %       See ISPC and COMPUTER.
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+% --- Executes on scale text change
 function scale_text_Callback(hObject, eventdata, handles)
 % hObject    handle to threshold_text (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -34,20 +48,6 @@ function scale_text_Callback(hObject, eventdata, handles)
 end
 
 
-% --- Executes during object creation, after setting all properties.
-function scale_text_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to threshold_text (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
-end
-
-
 function pushbutton_inpainting_exec_Callback(hObject, eventdata, handles)
 % executes inpainting in image space
 
@@ -60,55 +60,20 @@ function pushbutton_inpainting_exec_Callback(hObject, eventdata, handles)
     %convert from string to number if possible, otherwise returns empty
     scale_value = str2double(scale_value);
     
-    % rescale the images
-    input_im = imresize(handles.user_data.input_im, scale_value);
-    inpaint_mask = imresize(handles.user_data.input_mask, scale_value);
-    
-    if strcmp(handles.user_data.inpainting_exec_type, 'MATLAB')
-        exec_cmd = handles.user_data.inpainting_exec;
-        exec_cmd = regexprep(exec_cmd, '\[inpainted_im\]', 'inpainted_im');
-        exec_cmd = regexprep(exec_cmd, '\[input_im\]', 'input_im');
-        exec_cmd = regexprep(exec_cmd, '\[inpaint_mask\]', 'inpaint_mask');
-        
-        params_list = '';
-        for idx = 1:length(handles.user_data.inpainting_params)
-            params_list = [params_list ', ' handles.user_data.inpainting_params{idx}];
-        end
-        exec_cmd = regexprep(exec_cmd, '\[params\]', params_list);
-    end
-    
-    curr_path = pwd;
-    cd(handles.user_data.inpainting_run_dir);
-    
-    % run pre-exec cmds
-    for idx = 1:length(handles.user_data.inpainting_prerun_cmds)
-        eval(handles.user_data.inpainting_prerun_cmds{idx})
-    end
-    
-    % wait dialog box
-    [ dlg ] = waitMessage( 'Running inpainting', 'Running inpainting code ... please wait ...', handles.gui_data.icons.info_icon, handles.gui_data.icons.info_icon_map );
-    
-    % run inpainting code
-    eval(exec_cmd);
-    
-    % delete the dialog box
-    delete(dlg);
-    
-    % run post-exec cmds
-    for idx = 1:length(handles.user_data.inpainting_postrun_cmds)
-        eval(handles.user_data.inpainting_postrun_cmds{idx})
-    end
-    
-    cd(curr_path);
+    params = inpaintingFunc('createInputParamsCell', scale_value);
+    [ inpainted_im input_im inpaint_mask ] = inpaintingFunc('inpainting', handles.user_data.input_im, handles.user_data.input_mask, params, handles );
     
     % store the output
-    handles.user_data.inpainting_output = inpainted_im;
+    handles.user_data.inpainting_output = {inpainted_im, input_im, inpaint_mask};
 
+    % store the params used
+    handles.user_data.inpainting_output_params = params;
+    
     % Update handles structure
     guidata(hObject, handles);
     
-    fig_h = figure('Name','Inpainting Output'); imshow(handles.user_data.inpainting_output);
-    set(fig_h, 'units', 'pixels', 'position', [100 100 size(handles.user_data.inpainting_output,2) size(handles.user_data.inpainting_output,1)], 'paperpositionmode', 'auto');
+    fig_h = figure('Name','Inpainting Output'); imshow(handles.user_data.inpainting_output{1});
+    set(fig_h, 'units', 'pixels', 'position', [100 100 size(handles.user_data.inpainting_output{1},2) size(handles.user_data.inpainting_output{1},1)], 'paperpositionmode', 'auto');
     set(get(fig_h,'CurrentAxes'), 'position', [0 0 1 1], 'visible', 'off');
     %print('-depsc', out_filename, '-r0');
     
