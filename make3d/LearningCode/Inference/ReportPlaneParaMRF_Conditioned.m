@@ -36,7 +36,7 @@
 % *  permissions and limitations under the License.
 % *
 % */
-function  ReportPlaneParaMRF_Conditioned(Default, Sup, SupOri,depthMap,VarMapRaw, ...
+function  ReportPlaneParaMRF_Conditioned(Default, fgmask, Sup, SupOri,depthMap,VarMapRaw, ...
 	  	RayOri, Ray, SupNeighborTable, maskSky,maskG, MultiScaleSupTable, ...
 		StraightLineTable);
 % This function runs the RMF over the plane parameter of each superpixels
@@ -281,13 +281,13 @@ for i = NuSup
            	else
               		wei = 1;
             end
-            
-        % Do Check for forground superpixel
-            if find(fgSupIdxs == i |fgSupIdxs == j )
-                expV = exp(-10*ShiftCoP );
-              	wei = 1/(1+expV);            
-            end
-	
+%             
+%         % Do Check for forground superpixel
+%             if find(fgSupIdxs == i |fgSupIdxs == j )
+%                 expV = exp(-10*ShiftCoP );
+%               	wei = 1/(1+expV);            
+%             end
+% 	
             if ExtractRelationInfo == 1; % keep record
                 WeiM(i,j) = wei;
             end

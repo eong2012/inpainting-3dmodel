@@ -95,6 +95,9 @@ addpath(genpath(fullfile(progroot, 'LaserDataCollection/')));
 addpath(genpath(fullfile(progroot, 'third_party/EdgeLinkLineSegFit/')));
 addpath(genpath(fullfile(progroot, 'ec2/bin/mex/'))); 
 
+% add the 3D inpainting code to the path
+addpath(genpath(fullfile(progroot, 'Inpainting3D'))); 
+
 if CvxFlag
 % enble cvx
 %   addpath('/afs/cs/group/reconstruction3d/Data/cvx');

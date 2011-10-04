@@ -36,7 +36,7 @@
 % *  permissions and limitations under the License.
 % *
 % */
-function [im, SupNeighborTable]=premergAllsuperpixel_efficient(im, Default)
+function [im, SupNeighborTable]=premergAllsuperpixel_efficient(im, fgmask, Default)
 %(This is program conver a non_ordered non_connected superpixel image to 
 % ordered superpixel image
 % input:
@@ -54,7 +54,7 @@ function [im, SupNeighborTable]=premergAllsuperpixel_efficient(im, Default)
 % to replace it's label with the one that is most common in the outline
 %%%
 
-if nargin <2
+if nargin <3
    Default.SmallThre = 5; %smallest sup size
 end
 SupNeighborTableFlag = 1;
@@ -94,6 +94,10 @@ for i=NuSup
 %                                   | [zeros(1,xn); [mask(1:(end-1),2:(end)) zeros(yn-1,1)]]...
 %                                   ;                          
                mask_dilate(mask) = 0;
+               
+               % avoid combining SP with the FG
+               mask_dilate(fgmask) = 0;
+               
 %                im(mask) = analysesupinpatch(im(mask_dilate));%hard work
                im(mask) = mode(im(mask_dilate));
            end
