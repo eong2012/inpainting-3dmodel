@@ -124,8 +124,9 @@ for j = 1:3% number of scale of superpixel
 
         % show superpixel
         if DisplayFlag
-           figure(1);
+           figure;
            imagesc(Sup{j});
+           set(gcf, 'Name', ['Sup' num2str(j)]);
            newmap = rand(max(max(Sup{j})),3);
            colormap(newmap);
         end

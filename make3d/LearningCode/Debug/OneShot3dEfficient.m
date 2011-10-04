@@ -104,6 +104,12 @@ Default = SetupDefault_New(...
     Flag);
 disp([ num2str( toc(startTime) ) ' seconds.']);
 
+% Force DisplayFlag to global 1
+Default.Flag.DisplayFlag = 1;
+
+%Docking Figures Automatically
+set(0,'DefaultFigureWindowStyle','docked');
+
 % Image loading
 fprintf('Loading the image...               ');
 img = imread(ImgPath);
@@ -116,6 +122,26 @@ img = imread(ImgPath);
 %		disp('This image has known  f  and/or   f/sx ');
 %	end
 disp([ num2str( toc(startTime) ) ' seconds.']);
+
+
+fgImg = imread('mask.png');
+
+redchannel = img(:,:,1);
+greenchannel = img(:,:,2);
+bluechannel = img(:,:,3);
+
+redchannel(fgImg) = 0;
+greenchannel(fgImg) = 0;
+bluechannel(fgImg) = 0;
+
+img= cat(3, redchannel, greenchannel, bluechannel);
+
+
+if Default.Flag.DisplayFlag
+    figure;
+    set(gcf, 'Name', 'Input Image');
+    imshow(img);
+end
 
 % ***************************************************
 
@@ -139,6 +165,16 @@ fprintf('Creating Features and multiple segmentations... ');
 [TextureFeature TextSup]=GenTextureFeature_InnerMulSup(Default, img, Sup{2}, Sup{1},...
     imresize((MedSup),[Default.TrainVerYSize Default.TrainHoriXSize],'nearest'), 1);%, maskg);
 disp([ num2str( toc(startTime) ) ' seconds.']);
+
+if Default.Flag.DisplayFlag
+    figure;
+    set(gcf, 'Name', 'MedSup');
+    imagesc(MedSup);
+    figure;
+    set(gcf, 'Name', 'SmallSup');
+    imagesc(Sup{1});
+end
+
 
 % 3) Superpixel Features generation
 %    [FeatureSupOld, NeighborListOld] = f_sup_old(Default,
@@ -193,8 +229,22 @@ fprintf('Preparation for the Inference...             ');
 % 1) Generate Ground and Sky mask
 [ maskg, maskSky] = gen_predicted_GS_efficient(Default, TextureFeature.Abs, FeatureSup);
 
+
+if Default.Flag.DisplayFlag
+    figure;
+    set(gcf, 'Name', 'maskg');
+    imagesc(maskg);
+    figure;
+    set(gcf, 'Name', 'maskSky');
+    imagesc(maskSky);
+end
+
+
 % 2) Clean Sup{1} (1st Scale) according to the sky mask
 [Sup{1}, SupOri, SupNeighborTable]=CleanedSupNew(Default,Sup{1},maskSky, SupNeighborTable);
+
+NuSupSet = unique(Sup{1}(:))';
+NuSup = size(setdiff(NuSupSet,0),2)
 
 % 3) Generate predicted (depth:1 Variance:2 ) setup as a row verctor
 [Predicted]=gen_predicted(Default, TextureFeature.Abs, FeatureSup, [1 2]);

@@ -280,11 +280,17 @@ for i = NuSup
               		wei = 1/(1+expV);
            	else
               		wei = 1;
-           	end
+            end
+            
+        % Do Check for forground superpixel
+            if find(fgSupIdxs == i |fgSupIdxs == j )
+                expV = exp(-10*ShiftCoP );
+              	wei = 1/(1+expV);            
+            end
 	
-	   	if ExtractRelationInfo == 1; % keep record
-			WeiM(i,j) = wei;
-	   	end
+            if ExtractRelationInfo == 1; % keep record
+                WeiM(i,j) = wei;
+            end
 
         	oneRay1 = temp1*wei;
         	oneRay2 = temp2*wei;

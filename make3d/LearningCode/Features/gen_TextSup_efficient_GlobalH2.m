@@ -91,7 +91,9 @@ for m=1:NuPick
     img=H2(:,:,Pick(m,:));    
     
     if DisplayFlag
-        figure(1); image(img);
+        figure;
+        set(gcf, 'Name', ['H2(' num2str(m) ')']);
+        image(img);
     end
 
     %=================================    
@@ -126,8 +128,9 @@ for m=1:NuPick
 
         % show superpixel
         if DisplayFlag 
-           figure(1);
+           figure;
            imagesc(TextSup{m,j});
+           set(gcf, 'Name', ['TextSup (' num2str(m) ',' num2str(j) ')']);
            newmap = rand(max(max(TextSup{m,j})),3);
            colormap(newmap);
         end
