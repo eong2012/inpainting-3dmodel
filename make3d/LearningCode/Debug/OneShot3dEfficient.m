@@ -105,9 +105,6 @@ Default = SetupDefault_New(...
     Flag);
 disp([ num2str( toc(startTime) ) ' seconds.']);
 
-% Force DisplayFlag to global 1
-Default.Flag.DisplayFlag = 1;
-
 %Docking Figures Automatically
 set(0,'DefaultFigureWindowStyle','docked');
 
@@ -159,7 +156,7 @@ fprintf('Creating Features and multiple segmentations... ');
 [TextureFeature TextSup]=GenTextureFeature_InnerMulSup(Default, img, Sup{2}, Sup{1},...
     imresize((MedSup),[Default.TrainVerYSize Default.TrainHoriXSize],'nearest'), 1);%, maskg);
 disp([ num2str( toc(startTime) ) ' seconds.']);
-
+frank delleart
 if Default.Flag.DisplayFlag
     figure;
     set(gcf, 'Name', 'MedSup');
