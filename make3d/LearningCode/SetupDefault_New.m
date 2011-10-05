@@ -46,7 +46,7 @@ Default.ScratchFolder = ScratchFolder;
 
 % setflag
 if isempty( Flag)
-   Default.Flag.DisplayFlag = 1;
+   Default.Flag.DisplayFlag = 0;
    Default.Flag.IntermediateStorage = 0;
    Default.Flag.FeaturesOnly = 0;
    Default.Flag.NormalizeFlag = 1;
@@ -104,5 +104,5 @@ Default.SkyThreshold = 1;
 Default.SwitchPreprocessVsSP = 0;   % 1 - blackening for FG, 0 - making sure SP follow the FG region
 Default.DivideRegionHeight = 4;     % when dividing FG connected component into planes, do it in SP of this pixel height
 Default.InpaintingScale = 0.5;      % scale at which the inpainting happens
-
+Default.FGDilationMask = strel('disk',2,0);     % the kernel used for dilating the FG binary mask
 return;
