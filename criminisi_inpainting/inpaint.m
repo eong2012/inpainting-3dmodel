@@ -15,7 +15,7 @@ function [inpaintedImg,origImg,C,D,fillMovie] = inpaint(img,fillColor,superpixel
 %   C              MxN matrix of confidence values accumulated over all iterations.
 %   D              MxN matrix of data term values accumulated over all iterations.
 %   fillMovie      A Matlab movie struct depicting the fill region over time. 
-%
+%  
 % Example:
 %   [i1,i2,i3,c,d,mov] = inpaint('bungee0.png','bungee1.png',[0 255 0]);
 %   plotall;           % quick and dirty plotting script
