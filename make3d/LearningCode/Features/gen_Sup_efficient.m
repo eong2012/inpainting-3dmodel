@@ -57,24 +57,22 @@ DisplayFlag = Default.Flag.DisplayFlag; % set to display or not
 
 scale =[0.8 1.6 5]; % use different scale to generate small(0.8) middle(1.6) 5(large) scale of superpixel
 
-    [VertYSizeHiREs HoriXSizeHiREs dummy]= size(img);% find the dimension size of the Hi Resolution image
-    clear dummy;
+[VertYSizeHiREs HoriXSizeHiREs dummy]= size(img);% find the dimension size of the Hi Resolution image
+clear dummy;
 
-    % using a fixed range of median size image [SegVertYSize SegHoriXSize ] 
-    %  to generate superpixel to reduce computation
-    if VertYSizeHiREs*HoriXSizeHiREs > Default.SegVertYSize*Default.SegHoriXSize
+% using a fixed range of median size image [SegVertYSize SegHoriXSize ] 
+%  to generate superpixel to reduce computation
+if VertYSizeHiREs*HoriXSizeHiREs > Default.SegVertYSize*Default.SegHoriXSize
 
-       % Downsample high resolution image to a fixed median size image
-       %**** +4 because segmentImgOpt gives constant additinal rows and column
-       %**** so add 4 rows and columns a prior then delete then at line 55 
-       img = imresize(img,[Default.SegVertYSize+4 Default.SegHoriXSize+4 ],'nearest'); 
-       
-       % Downsample the FG mask with the image
-       fgmask = imresize(fgmask,[Default.SegVertYSize+4 Default.SegHoriXSize+4 ],'nearest'); 
-    else
-       Default.SegVertYSize = VertYSizeHiREs-4;
-       Default.SegHoriXSize = HoriXSizeHiREs-4;
-    end
+   % Downsample high resolution image to a fixed median size image
+   %**** +4 because segmentImgOpt gives constant additinal rows and column
+   %**** so add 4 rows and columns a prior then delete then at line 55 
+   img = imresize(img,[Default.SegVertYSize+4 Default.SegHoriXSize+4 ],'nearest'); 
+
+else
+   Default.SegVertYSize = VertYSizeHiREs-4;
+   Default.SegHoriXSize = HoriXSizeHiREs-4;
+end
 
 % generate superpixel of each image
 for j = 1:3% number of scale of superpixel
@@ -87,21 +85,24 @@ for j = 1:3% number of scale of superpixel
         % call the efficient segment function writen in C++ from MIT
         % Output the high resolution image ( + 1 since the smallest index can be zero)
         if j ==1
-	   a = segmentImgOpt( Default.sigm*scale(j), Default.k*scale(j), Default.minp*scale(j), img,...
+            a = segmentImgOpt( Default.sigm*scale(j), Default.k*scale(j), Default.minp*scale(j), img,...
                             [ Default.OutPutFolder Default.filename{1} '.ppm'],Default.PpmOption) + 1;
         else
-	   a = segmentImgOpt( Default.sigm*scale(j), Default.k*scale(j), Default.minp*scale(j), img,...
+            a = segmentImgOpt( Default.sigm*scale(j), Default.k*scale(j), Default.minp*scale(j), img,...
                             [ Default.OutPutFolder Default.filename{1} '.ppm'], 0) + 1;
         end
-        
-        % 3D inpainting -> adjust SPs to make sure they follow FG boundaries
-        a = adjustSup(a, fgmask);
         
         a = a(3:(end-2),3:(end-2)); %*** clean the edge superpixel index errors ***
         
         % Arrange the superpixel index in order
-        if j == 1 % For the smallest Scale           
-
+        if j == 1 % For the smallest Scale 
+           % Downsample the FG mask with the image
+           fgmask = imresize(fgmask,[Default.SegVertYSize Default.SegHoriXSize],'nearest');
+           
+           % 3D inpainting -> adjust SPs to make sure they follow FG boundaries
+           a = adjustSup(a, fgmask);
+           
+           % renumber the labels (according to the number of unique labels)
            ma = max(a(:));
            Unique_a = unique(a);
            SparseIndex = sparse(ma,1);
@@ -113,7 +114,10 @@ for j = 1:3% number of scale of superpixel
 
            % Downsample the FG mask with the image
            fgmask_rsz = imresize(fgmask,[Default.VertYNuDepth Default.HoriXNuDepth],'nearest');
-           
+
+           % 3D inpainting -> adjust SPs to make sure they follow FG boundaries
+           Sup{j} = adjustSup(Sup{j}, fgmask_rsz);
+            
            % clean superpixel section ====================================================================
            % merage all small and disconneted points in 1st scale segmentation
            [Sup{j} SupNeighborTableFlag] = premergAllsuperpixel_efficient(Sup{j}, fgmask_rsz, Default);

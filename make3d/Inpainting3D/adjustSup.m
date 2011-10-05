@@ -12,8 +12,8 @@ function [ new_sup ] = adjustSup( sup, fgmask )
         region = labels == lbl_idx;
         not_region = ~region;
 
-        sup(region) = max_sup;
         max_sup = max_sup + 1;
+        sup(region) = max_sup;
         
 %         unique_sup = unique(sup(region))';
 %         
@@ -38,6 +38,12 @@ function [ new_sup ] = adjustSup( sup, fgmask )
     [sups, SortVec] = sort(sup(:));
     UV(SortVec) = ([1; diff(sups)] ~= 0);
     supus = sup(UV);
+    
+%     
+%            SparseIndex = sparse(sups(end),1);
+%            SparseIndex(Unique_a) = 1:size(Unique_a);
+%            MedSup = full(SparseIndex(a));
+           
     new_sup = sup;
     for idx = 1:length(supus)
         new_sup(sup == supus(idx)) = idx;
