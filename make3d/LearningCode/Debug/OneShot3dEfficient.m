@@ -115,6 +115,12 @@ set(0,'DefaultFigureWindowStyle','docked');
 fprintf('Loading the images...               ');
 img = imread(ImgPath);
 fgmask = imread(fgMaskPath);
+
+% if switch to do preprocessing instead of fixing the SPs
+if Default.SwitchPreprocessVsSP
+   img(repmat(fgmask,[1 1 3])) = 0;
+end
+
 %  imgCameraParameters = exifread(ImgPath);
 %	if false %Default.Flag.DisplayFlag && (any( strcmp(fieldnames(imgCameraParameters),'FocalLength') ) || ...
 %						  any( strcmp(fieldnames(imgCameraParameters),'FNumber') )  	|| ...
