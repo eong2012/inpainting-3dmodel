@@ -909,6 +909,10 @@ end
 
 % porject the ray on planes to generate the FitDepth
 PlanePara = reshape(PlanePara,3,[]);
+
+% inpaint the plane parameters
+[ PlanePara ] = inpaintAlpha( Default, fgmask, FgSupidx{1}, PlanePara, SupEpand );
+
 FitDepth = FarestDist*ones(1,Default.VertYNuDepth*Default.HoriXNuDepth);
 FitDepth(~maskSkyEroded) = (1./sum(PlanePara(:,Sup2Para(SupEpand(~maskSkyEroded))).*Ray(:,~maskSkyEroded),1))';
 FitDepth = reshape(FitDepth,Default.VertYNuDepth,[]); 
