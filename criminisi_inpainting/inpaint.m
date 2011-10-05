@@ -1,4 +1,4 @@
-function [inpaintedImg,origImg,fillImg,C,D,fillMovie] = inpaint(imgFilename,fillFilename,fillColor)
+function [inpaintedImg,origImg,C,D,fillMovie] = inpaint(img,fillColor,superpixel,newregion)
 %INPAINT  Exemplar-based inpainting.
 %
 % Usage:   [inpaintedImg,origImg,fillImg,C,D,fillMovie] ...
@@ -15,7 +15,7 @@ function [inpaintedImg,origImg,fillImg,C,D,fillMovie] = inpaint(imgFilename,fill
 %   C              MxN matrix of confidence values accumulated over all iterations.
 %   D              MxN matrix of data term values accumulated over all iterations.
 %   fillMovie      A Matlab movie struct depicting the fill region over time. 
-%
+%  
 % Example:
 %   [i1,i2,i3,c,d,mov] = inpaint('bungee0.png','bungee1.png',[0 255 0]);
 %   plotall;           % quick and dirty plotting script
@@ -24,12 +24,25 @@ function [inpaintedImg,origImg,fillImg,C,D,fillMovie] = inpaint(imgFilename,fill
 %   author: Sooraj Bhat
 
 warning off MATLAB:divideByZero
-[img,fillImg,fillRegion] = loadimgs(imgFilename,fillFilename,fillColor);
-img = double(img);
+%[img,fillImg,fillRegion] = loadimgs(imgFilename,fillFilename,fillColor);
+img = im2double(img);
 origImg = img;
 ind = img2ind(img);
 sz = [size(img,1) size(img,2)];
-sourceRegion = ~fillRegion;
+%sourceRegion = imresize(imread('writefrommask.png'),0.3);
+%sourceRegion=logical(sourceRegion);
+
+
+
+sourceRegion=logical(superpixel);
+
+G = or(sourceRegion,logical(newregion));
+
+
+%G = zeros(461,615);
+%G(272:306,262:297)=1;
+%G = logical(G);
+%sourceRegion = ~fillRegion;so fill region has te region to be filled in. Source region has the negative of this.
 
 % Initialize isophote values
 [Ix(:,:,3) Iy(:,:,3)] = gradient(img(:,:,3));
@@ -39,8 +52,8 @@ Ix = sum(Ix,3)/(3*255); Iy = sum(Iy,3)/(3*255);
 temp = Ix; Ix = -Iy; Iy = temp;  % Rotate gradient 90 degrees
 
 % Initialize confidence and data terms
-C = double(sourceRegion);
-D = repmat(-.1,sz);
+C = double(sourceRegion); %confidence  term
+D = repmat(-.1,sz); %data term
 
 % Visualization stuff
 if nargout==6
@@ -56,25 +69,25 @@ rand('state',0);
 iter = 1;
 
 % Loop until entire fill region has been covered
-while any(fillRegion(:))
-    fprintf(1, '%d pixels remain to be filled in\n', nnz(fillRegion(:)));
+while any(min(G(:),~sourceRegion(:)))
+    fprintf(1, '%d pixels remain to be filled in\n', nnz(min(G(:),~sourceRegion(:)))); %numder of pixels in the fill region
     
   % Find contour & normalized gradients of fill region
-  dR = find(conv2(double(fillRegion),[1,1,1;1,-8,1;1,1,1],'same')>0);
+  dR = find(conv2(double(min(G,~sourceRegion)),[1,1,1;1,-8,1;1,1,1],'same')>0); %contains the initial fron. dR contains only pixel indices.
 
-  [Nx,Ny] = gradient(double(~fillRegion));
-  N = [Nx(dR(:)) Ny(dR(:))];
+  [Nx,Ny] = gradient(double(min(G,sourceRegion)));
+  N = [Nx(dR(:)) Ny(dR(:))]; %N contains the X and Y component of the gradient. 
   N = normr(N);  
-  N(~isfinite(N))=0; % handle NaN and Inf
+  N(~isfinite(N))=0; % handle NaN and Inf 
   
   % Compute confidences along the fill front
   for k=dR'
     Hp = getpatch(sz,k);
-    q = Hp(~(fillRegion(Hp)));
+    q = Hp(min(G(Hp),sourceRegion(Hp)));
     C(k) = sum(C(q))/numel(Hp);
   end
   
-  % Compute patch priorities = confidence term * data term
+  % Compute patch priorities = confidence term * data term 
   D(dR) = abs(Ix(dR).*N(:,1)+Iy(dR).*N(:,2)) + 0.001;
   priorities = C(dR).* D(dR);
   
@@ -82,13 +95,15 @@ while any(fillRegion(:))
   [unused,ndx] = max(priorities(:));
   p = dR(ndx(1));
   [Hp,rows,cols] = getpatch(sz,p);
-  toFill = fillRegion(Hp);
+  toFill = min(G(Hp),~sourceRegion(Hp));
   
   % Find exemplar that minimizes error, Hq
   Hq = bestexemplar(img,img(rows,cols,:),toFill',sourceRegion);
   
   % Update fill region
-  fillRegion(Hp(toFill)) = false;
+  fillRegion(Hp(toFill)) = false;% verry verry important %
+  
+  sourceRegion(Hp(toFill))=true;
   
   % Propagate confidence & isophote values
   C(Hp(toFill))  = C(p);
@@ -174,6 +189,8 @@ if ~ischar(fillFilename)
 else
     fillImg = imread(fillFilename);
 end
+
+fillImg = logical(fillImg);
 
 if ndims(fillImg) == 3
     fillRegion = fillImg(:,:,1)==fillColor(1) & ...
