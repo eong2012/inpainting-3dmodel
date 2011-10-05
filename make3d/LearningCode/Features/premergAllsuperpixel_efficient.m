@@ -99,10 +99,16 @@ for i=NuSup
                if Default.SwitchPreprocessVsSP == 0
                    % avoid combining SP with the FG
                    mask_dilate(fgmask) = 0;
-               end
+                   
+                   mode_sup = mode(im(mask_dilate)); 
+                   if ~isnan(mode_sup)
+                       im(mask) = mode_sup;
+                   end
+               else
                
 %                im(mask) = analysesupinpatch(im(mask_dilate));%hard work
-               im(mask) = mode(im(mask_dilate));
+                    im(mask) = mode(im(mask_dilate));
+               end
            end
 end
 
