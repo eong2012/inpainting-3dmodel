@@ -46,7 +46,7 @@ Default.ScratchFolder = ScratchFolder;
 
 % setflag
 if isempty( Flag)
-   Default.Flag.DisplayFlag = 0;
+   Default.Flag.DisplayFlag = 1;
    Default.Flag.IntermediateStorage = 0;
    Default.Flag.FeaturesOnly = 0;
    Default.Flag.NormalizeFlag = 1;

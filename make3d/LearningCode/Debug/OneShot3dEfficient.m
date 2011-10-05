@@ -105,9 +105,6 @@ Default = SetupDefault_New(...
     Flag);
 disp([ num2str( toc(startTime) ) ' seconds.']);
 
-% Force DisplayFlag to global 1
-Default.Flag.DisplayFlag = 1;
-
 %Docking Figures Automatically
 set(0,'DefaultFigureWindowStyle','docked');
 
@@ -159,7 +156,7 @@ fprintf('Creating Features and multiple segmentations... ');
 [TextureFeature TextSup]=GenTextureFeature_InnerMulSup(Default, img, Sup{2}, Sup{1},...
     imresize((MedSup),[Default.TrainVerYSize Default.TrainHoriXSize],'nearest'), 1);%, maskg);
 disp([ num2str( toc(startTime) ) ' seconds.']);
-
+frank delleart
 if Default.Flag.DisplayFlag
     figure;
     set(gcf, 'Name', 'MedSup');
@@ -236,9 +233,6 @@ end
 
 % 2) Clean Sup{1} (1st Scale) according to the sky mask
 [Sup{1}, SupOri, SupNeighborTable]=CleanedSupNew(Default,Sup{1},maskSky, SupNeighborTable);
-
-NuSupSet = unique(Sup{1}(:))';
-NuSup = size(setdiff(NuSupSet,0),2)
 
 % 3) Generate predicted (depth:1 Variance:2 ) setup as a row verctor
 [Predicted]=gen_predicted(Default, TextureFeature.Abs, FeatureSup, [1 2]);
