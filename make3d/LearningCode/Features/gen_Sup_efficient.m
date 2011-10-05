@@ -98,9 +98,12 @@ for j = 1:3% number of scale of superpixel
         if j == 1 % For the smallest Scale 
            % Downsample the FG mask with the image
            fgmask = imresize(fgmask,[Default.SegVertYSize Default.SegHoriXSize],'nearest');
-           
-           % 3D inpainting -> adjust SPs to make sure they follow FG boundaries
-           a = adjustSup(a, fgmask);
+               
+           % if no preprocessing done we need to fix SPs
+           if Default.SwitchPreprocessVsSP == 0
+               % 3D inpainting -> adjust SPs to make sure they follow FG boundaries
+               a = adjustSup(a, fgmask);
+           end
            
            % renumber the labels (according to the number of unique labels)
            ma = max(a(:));
@@ -114,9 +117,12 @@ for j = 1:3% number of scale of superpixel
 
            % Downsample the FG mask with the image
            fgmask_rsz = imresize(fgmask,[Default.VertYNuDepth Default.HoriXNuDepth],'nearest');
-
-           % 3D inpainting -> adjust SPs to make sure they follow FG boundaries
-           Sup{j} = adjustSup(Sup{j}, fgmask_rsz);
+           
+           % if no preprocessing done we need to fix SPs
+           if Default.SwitchPreprocessVsSP == 0
+               % 3D inpainting -> adjust SPs to make sure they follow FG boundaries
+               Sup{j} = adjustSup(Sup{j}, fgmask_rsz);
+           end
             
            % clean superpixel section ====================================================================
            % merage all small and disconneted points in 1st scale segmentation
@@ -129,8 +135,11 @@ for j = 1:3% number of scale of superpixel
            %Downsample to size size as prediected depth map
            a = imresize(a,[Default.VertYNuDepth Default.HoriXNuDepth],'nearest');
            
-           % 3D inpainting -> adjust SPs to make sure they follow FG boundaries
-           a = adjustSup(a, fgmask_rsz);
+           % if no preprocessing done we need to fix SPs
+           if Default.SwitchPreprocessVsSP == 0
+               % 3D inpainting -> adjust SPs to make sure they follow FG boundaries
+               a = adjustSup(a, fgmask_rsz);
+           end
            
            ma = max(a(:));
            Unique_a = unique(a);

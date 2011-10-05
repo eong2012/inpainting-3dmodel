@@ -100,4 +100,7 @@ Default.Oy_default = 1-Default.Oy/1704;%0.488886982; % camera origin offset from
 Default.GroundThreshold = 0.5;
 Default.SkyThreshold = 1;
 
+%=============== 3D inpainting options
+Default.SwitchPreprocessVsSP = 1;
+
 return;

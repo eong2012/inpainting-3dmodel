@@ -94,9 +94,12 @@ for i=NuSup
 %                                   | [zeros(1,xn); [mask(1:(end-1),2:(end)) zeros(yn-1,1)]]...
 %                                   ;                          
                mask_dilate(mask) = 0;
-               
-               % avoid combining SP with the FG
-               mask_dilate(fgmask) = 0;
+
+               % if no preprocessing done we need to avoid merging with FG
+               if Default.SwitchPreprocessVsSP == 0
+                   % avoid combining SP with the FG
+                   mask_dilate(fgmask) = 0;
+               end
                
 %                im(mask) = analysesupinpatch(im(mask_dilate));%hard work
                im(mask) = mode(im(mask_dilate));
