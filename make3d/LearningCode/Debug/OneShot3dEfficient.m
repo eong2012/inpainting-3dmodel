@@ -37,6 +37,7 @@
 % *
 % */
 function OneShot3dEfficient(ImgPath, OutPutFolder,...
+    fgMaskPath,... % binary mask that indicates where FG objects are
     taskName,...% taskname will append to the imagename and form the outputname
     ScratchFolder,... % ScratchFolder
     ParaFolder,... % All Parameter Folder
@@ -71,22 +72,22 @@ end
 startTime = tic;
 fprintf('Starting with new optimization...                        ');
 
-if nargin < 2
-    disp('Eror: At least need two input argument needed');
+if nargin < 3
+    disp('Eror: At least need three input argument needed');
     return;
-elseif nargin < 3
-    taskName = '';
-    Flag = [];
-    ScratchFolder = fullfile(root_path, 'scratch/IMStorage');
-    ParaFolder = fullfile(root_path, 'params');
 elseif nargin < 4
+    taskName = '';
     Flag = [];
     ScratchFolder = fullfile(root_path, 'scratch/IMStorage');
     ParaFolder = fullfile(root_path, 'params');
 elseif nargin < 5
     Flag = [];
+    ScratchFolder = fullfile(root_path, 'scratch/IMStorage');
     ParaFolder = fullfile(root_path, 'params');
 elseif nargin < 6
+    Flag = [];
+    ParaFolder = fullfile(root_path, 'params');
+elseif nargin < 7
     Flag = [];
 end
 
@@ -104,9 +105,19 @@ Default = SetupDefault_New(...
     Flag);
 disp([ num2str( toc(startTime) ) ' seconds.']);
 
+%Docking Figures Automatically
+set(0,'DefaultFigureWindowStyle','docked');
+
 % Image loading
-fprintf('Loading the image...               ');
+fprintf('Loading the images...               ');
 img = imread(ImgPath);
+fgmask = imread(fgMaskPath);
+
+% if switch to do preprocessing instead of fixing the SPs
+if Default.SwitchPreprocessVsSP
+   img(repmat(fgmask,[1 1 3])) = 0;
+end
+
 %  imgCameraParameters = exifread(ImgPath);
 %	if false %Default.Flag.DisplayFlag && (any( strcmp(fieldnames(imgCameraParameters),'FocalLength') ) || ...
 %						  any( strcmp(fieldnames(imgCameraParameters),'FNumber') )  	|| ...
@@ -117,13 +128,19 @@ img = imread(ImgPath);
 %	end
 disp([ num2str( toc(startTime) ) ' seconds.']);
 
+if Default.Flag.DisplayFlag
+    figure;
+    set(gcf, 'Name', 'Input Image');
+    imshow(img);
+end
+
 % ***************************************************
 
 % Features ===========================================
 
 % 1) Basic Superpixel generation and Sup clean
 fprintf('Creating Superpixels...           ');
-[MedSup, Sup, Default, SupNeighborTable] = gen_Sup_efficient(Default, img);
+[MedSup, Sup, FgSupidx, Default, SupNeighborTable] = gen_Sup_efficient(Default, img, fgmask);
 disp([ num2str( toc(startTime) ) ' seconds.']);
 
 % 2) Texture Features and inner multiple Sups generation
@@ -139,6 +156,16 @@ fprintf('Creating Features and multiple segmentations... ');
 [TextureFeature TextSup]=GenTextureFeature_InnerMulSup(Default, img, Sup{2}, Sup{1},...
     imresize((MedSup),[Default.TrainVerYSize Default.TrainHoriXSize],'nearest'), 1);%, maskg);
 disp([ num2str( toc(startTime) ) ' seconds.']);
+
+if Default.Flag.DisplayFlag
+    figure;
+    set(gcf, 'Name', 'MedSup');
+    imagesc(MedSup);
+    figure;
+    set(gcf, 'Name', 'SmallSup');
+    imagesc(Sup{1});
+end
+
 
 % 3) Superpixel Features generation
 %    [FeatureSupOld, NeighborListOld] = f_sup_old(Default,
@@ -193,6 +220,17 @@ fprintf('Preparation for the Inference...             ');
 % 1) Generate Ground and Sky mask
 [ maskg, maskSky] = gen_predicted_GS_efficient(Default, TextureFeature.Abs, FeatureSup);
 
+
+if Default.Flag.DisplayFlag
+    figure;
+    set(gcf, 'Name', 'maskg');
+    imagesc(maskg);
+    figure;
+    set(gcf, 'Name', 'maskSky');
+    imagesc(maskSky);
+end
+
+
 % 2) Clean Sup{1} (1st Scale) according to the sky mask
 [Sup{1}, SupOri, SupNeighborTable]=CleanedSupNew(Default,Sup{1},maskSky, SupNeighborTable);
 
@@ -209,7 +247,7 @@ disp([ num2str( toc(startTime) ) ' seconds.']);
 
 fprintf('Starting Inference... ');
 % 4) Plane Parameter MRF
-RunCompleteMRF_efficient( Default, img, Predicted, MedSup, Sup, SupOri, TextSup, SupNeighborTable, ...
+RunCompleteMRF_efficient( Default, img, fgmask, FgSupidx, Predicted, MedSup, Sup, SupOri, TextSup, SupNeighborTable, ...
     reshape( FeatureSup( TextureFeature.Abs(:,1)), Default.VertYNuDepth, []), ...
     maskSky, maskg);
 disp(['Finished Inference at:         ' num2str( toc(startTime) ) ' seconds.']);

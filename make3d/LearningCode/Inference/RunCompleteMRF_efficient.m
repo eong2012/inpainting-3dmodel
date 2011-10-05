@@ -36,7 +36,7 @@
 % *  permissions and limitations under the License.
 % *
 % */
-function [] = RunCompleteMRF_efficient( Default, img, Predicted, MedSup, Sup, SupOri, TextSup,...
+function [] = RunCompleteMRF_efficient( Default, img, fgmask, FgSupidx, Predicted, MedSup, Sup, SupOri, TextSup,...
                                         SupNeighborTable, SupSize, maskSky, maskg);
 %function [] = RunCompleteMRF(BatchNu,LearnType,LearnSkyEx,LearnLog,LearnNear,...
 %                   LearnAlg,baseline,step);
@@ -112,7 +112,7 @@ function [] = RunCompleteMRF_efficient( Default, img, Predicted, MedSup, Sup, Su
      MultiScaleSupTable = [];
   end
 % =================================END OF Multiple Segmentation Occlusion Decision=====================================
-  ReportPlaneParaMRF_Conditioned( Default, Sup{1}, SupOri, full(Predicted.depthMap), zeros( size(Predicted.VarMap)), ...
+  ReportPlaneParaMRF_Conditioned( Default, fgmask, FgSupidx, Sup{1}, SupOri, full(Predicted.depthMap), zeros( size(Predicted.VarMap)), ...
 		RayOri, Ray, SupNeighborTable, maskSky, maskg, MultiScaleSupTable, []); % not really using the Straight line constrains
 
 

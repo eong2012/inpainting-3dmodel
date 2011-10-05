@@ -148,3 +148,4 @@ Hist = histc( sup(:), NuSup);
 FeatureSup(1,NuSup) = Hist/sum(Hist)./SFeaMax(1);
 tempNuNeighbor = sum(SupNeighborTable,2);
 FeatureSup( countNuNei, NuSup) = tempNuNeighbor(NuSup)./SFeaMax(lNuNei);
+return;

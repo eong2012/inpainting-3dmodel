@@ -38,7 +38,7 @@
 % */
 function [Sup, SupOri, SupNeighborTable]=CleanedSupNew(Default,Sup,maskSky, SupNeighborTable)
 
-displayFlag = false;
+displayFlag = Default.Flag.DisplayFlag; % set to display or not
 ImCloseFlag = false;
 
 % get rid of the Sky for Sup 

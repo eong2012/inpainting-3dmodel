@@ -46,7 +46,7 @@ Default.ScratchFolder = ScratchFolder;
 
 % setflag
 if isempty( Flag)
-   Default.Flag.DisplayFlag = 0;
+   Default.Flag.DisplayFlag = 1;
    Default.Flag.IntermediateStorage = 0;
    Default.Flag.FeaturesOnly = 0;
    Default.Flag.NormalizeFlag = 1;
@@ -99,5 +99,8 @@ Default.Oy_default = 1-Default.Oy/1704;%0.488886982; % camera origin offset from
 
 Default.GroundThreshold = 0.5;
 Default.SkyThreshold = 1;
+
+%=============== 3D inpainting options
+Default.SwitchPreprocessVsSP = 1;
 
 return;
