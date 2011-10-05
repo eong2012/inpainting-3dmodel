@@ -105,13 +105,20 @@ Default = SetupDefault_New(...
     Flag);
 disp([ num2str( toc(startTime) ) ' seconds.']);
 
-%Docking Figures Automatically
-set(0,'DefaultFigureWindowStyle','docked');
+if Default.Flag.DisplayFlag
+    %Docking Figures Automatically
+    set(0,'DefaultFigureWindowStyle','docked');
+else
+    set(0,'DefaultFigureWindowStyle','normal');
+end
 
 % Image loading
 fprintf('Loading the images...               ');
 img = imread(ImgPath);
 fgmask = imread(fgMaskPath);
+
+% dilate the mask
+fgmask = imdilate(fgmask, Default.FGDilationMask);
 
 % if switch to do preprocessing instead of fixing the SPs
 if Default.SwitchPreprocessVsSP
