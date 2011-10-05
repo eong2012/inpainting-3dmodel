@@ -101,6 +101,6 @@ Default.GroundThreshold = 0.5;
 Default.SkyThreshold = 1;
 
 %=============== 3D inpainting options
-Default.SwitchPreprocessVsSP = 1;
+Default.SwitchPreprocessVsSP = 0;
 
 return;
