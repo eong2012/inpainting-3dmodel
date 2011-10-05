@@ -231,9 +231,6 @@ end
 % 2) Clean Sup{1} (1st Scale) according to the sky mask
 [Sup{1}, SupOri, SupNeighborTable]=CleanedSupNew(Default,Sup{1},maskSky, SupNeighborTable);
 
-NuSupSet = unique(Sup{1}(:))';
-NuSup = size(setdiff(NuSupSet,0),2)
-
 % 3) Generate predicted (depth:1 Variance:2 ) setup as a row verctor
 [Predicted]=gen_predicted(Default, TextureFeature.Abs, FeatureSup, [1 2]);
 

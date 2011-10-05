@@ -282,8 +282,8 @@ for i = NuSup
               		wei = 1;
             end
             
-        % Do Check for forground superpixel
-%             if ( find(FgSupidx{1} == i) || find(FgSupidx{1} == j ) )
+%         % Do Check for forground superpixel
+%             if ( any(FgSupidx{1} == i) || any(FgSupidx{1} == j ) )
 %                 expV = exp(-10*ShiftCoP );
 %               	wei = 1/(1+expV);            
 %             end
