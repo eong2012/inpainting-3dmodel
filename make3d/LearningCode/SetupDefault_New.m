@@ -101,6 +101,8 @@ Default.GroundThreshold = 0.5;
 Default.SkyThreshold = 1;
 
 %=============== 3D inpainting options
-Default.SwitchPreprocessVsSP = 0;
+Default.SwitchPreprocessVsSP = 0;   % 1 - blackening for FG, 0 - making sure SP follow the FG region
+Default.DivideRegionHeight = 4;     % when dividing FG connected component into planes, do it in SP of this pixel height
+Default.InpaintingScale = 0.5;      % scale at which the inpainting happens
 
 return;

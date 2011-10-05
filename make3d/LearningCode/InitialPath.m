@@ -97,6 +97,7 @@ addpath(genpath(fullfile(progroot, 'ec2/bin/mex/')));
 
 % add the 3D inpainting code to the path
 addpath(genpath(fullfile(progroot, 'Inpainting3D'))); 
+addpath(genpath(fullfile(fileparts(progroot), 'criminisi_inpainting'))); 
 
 if CvxFlag
 % enble cvx
