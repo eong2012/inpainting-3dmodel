@@ -150,7 +150,7 @@ for j = 1:3% number of scale of superpixel
         
         % get the FG indexes
         temp = Sup{j}(fgmask_rsz);
-        FgSupidx{j} = unique(temp);
+        FgSupidx{j} = unique(temp)';
         
         clear a SparseIndex Unique_a ma;
 

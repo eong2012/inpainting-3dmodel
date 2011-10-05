@@ -38,15 +38,8 @@ function [ new_sup ] = adjustSup( sup, fgmask )
     [sups, SortVec] = sort(sup(:));
     UV(SortVec) = ([1; diff(sups)] ~= 0);
     supus = sup(UV);
-    
-%     
-%            SparseIndex = sparse(sups(end),1);
-%            SparseIndex(Unique_a) = 1:size(Unique_a);
-%            MedSup = full(SparseIndex(a));
-           
-    new_sup = sup;
-    for idx = 1:length(supus)
-        new_sup(sup == supus(idx)) = idx;
-    end
+    SparseIndex = sparse(sups(end),1);
+    SparseIndex(supus) = 1:length(supus);
+    new_sup = full(SparseIndex(sup));
 end
 
