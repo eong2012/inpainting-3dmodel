@@ -254,7 +254,7 @@ disp([ num2str( toc(startTime) ) ' seconds.']);
 
 fprintf('Starting Inference... ');
 % 4) Plane Parameter MRF
-RunCompleteMRF_efficient( Default, img, fgmask, FgSupidx, Predicted, MedSup, Sup, SupOri, TextSup, SupNeighborTable, ...
+[ inpainted_img ] = RunCompleteMRF_efficient( Default, img, fgmask, FgSupidx, Predicted, MedSup, Sup, SupOri, TextSup, SupNeighborTable, ...
     reshape( FeatureSup( TextureFeature.Abs(:,1)), Default.VertYNuDepth, []), ...
     maskSky, maskg);
 disp(['Finished Inference at:         ' num2str( toc(startTime) ) ' seconds.']);
@@ -266,6 +266,7 @@ save([ Default.OutPutFolder Default.filename{1} '.mat'],'MedSup');
 % 6) Image copy to OutPutFolder
 %system(['cp ' ImgPath ' ' OutPutFolder Default.filename{1} '.jpg']);
 copyfile(ImgPath, [OutPutFolder Default.filename{1} '.jpg'],'f');
+imwrite(inpainted_img, [OutPutFolder Default.filename{1} '.jpg']);
 disp([ num2str( toc(startTime) ) ' seconds.']);
 disp(['Done.        Total time taken = ' num2str( toc(startTime) ) ' seconds.'] );
 % ***************************************************

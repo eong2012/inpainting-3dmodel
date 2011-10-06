@@ -70,7 +70,7 @@ iter = 1;
 
 % Loop until entire fill region has been covered
 while any(min(G(:),~sourceRegion(:)))
-    fprintf(1, '%d pixels remain to be filled in\n', nnz(min(G(:),~sourceRegion(:)))); %numder of pixels in the fill region
+%    fprintf(1, '%d pixels remain to be filled in\n', nnz(min(G(:),~sourceRegion(:)))); %numder of pixels in the fill region
     
   % Find contour & normalized gradients of fill region
   dR = find(conv2(double(min(G,~sourceRegion)),[1,1,1;1,-8,1;1,1,1],'same')>0); %contains the initial fron. dR contains only pixel indices.

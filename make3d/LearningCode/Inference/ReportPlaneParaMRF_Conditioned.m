@@ -36,7 +36,7 @@
 % *  permissions and limitations under the License.
 % *
 % */
-function  ReportPlaneParaMRF_Conditioned(Default, fgmask, FgSupidx, Sup, SupOri,depthMap,VarMapRaw, ...
+function  [ inpainted_img ] = ReportPlaneParaMRF_Conditioned(Default, img, fgmask, FgSupidx, Sup, SupOri,depthMap,VarMapRaw, ...
 	  	RayOri, Ray, SupNeighborTable, maskSky,maskG, MultiScaleSupTable, ...
 		StraightLineTable);
 % This function runs the RMF over the plane parameter of each superpixels
@@ -910,8 +910,18 @@ end
 % porject the ray on planes to generate the FitDepth
 PlanePara = reshape(PlanePara,3,[]);
 
-% inpaint the plane parameters
-[ PlanePara ] = inpaintAlpha( Default, fgmask, FgSupidx{1}, PlanePara, SupEpand );
+
+% ===============3D inpainting stuff starts====================
+% break the current superpixels
+[ PlanePara Sup2Para SupEpand SupOri div_newfgmaskidx lr_sups ] = breakSups( Default, FgSupidx{1}, PlanePara, Sup2Para, SupEpand, SupOri );
+
+% inpaint alpha values
+[ PlanePara ] = inpaintAlpha( Default, PlanePara, Sup2Para, SupEpand, div_newfgmaskidx, lr_sups );
+
+% inpaint appearance
+[ inpainted_img ] = inpaintAppearance( Default, img, SupEpand, div_newfgmaskidx, lr_sups );
+% ===============3D inpainting stuff ends====================
+
 
 FitDepth = FarestDist*ones(1,Default.VertYNuDepth*Default.HoriXNuDepth);
 FitDepth(~maskSkyEroded) = (1./sum(PlanePara(:,Sup2Para(SupEpand(~maskSkyEroded))).*Ray(:,~maskSkyEroded),1))';
