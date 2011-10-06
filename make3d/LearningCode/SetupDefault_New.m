@@ -105,4 +105,5 @@ Default.SwitchPreprocessVsSP = 0;   % 1 - blackening for FG, 0 - making sure SP 
 Default.DivideRegionHeight = 4;     % when dividing FG connected component into planes, do it in SP of this pixel height
 Default.InpaintingScale = 0.5;      % scale at which the inpainting happens
 
+Default.FGDilationMask = strel('disk',0,0);     % the kernel used for dilating the FG binary mask
 return;

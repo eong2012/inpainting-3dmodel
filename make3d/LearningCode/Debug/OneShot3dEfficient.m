@@ -118,7 +118,7 @@ img = imread(ImgPath);
 fgmask = imread(fgMaskPath);
 
 % dilate the mask
-fgmask = imdilate(fgmask, Default.FGDilationMask);
+%fgmask = imdilate(fgmask, Default.FGDilationMask);
 
 % if switch to do preprocessing instead of fixing the SPs
 if Default.SwitchPreprocessVsSP

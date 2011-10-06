@@ -445,7 +445,7 @@ for i = addedIndexList
         % Do Check for forground superpixel
         if ( any(FgSupidx{1} == i) || any(FgSupidx{1} == j ) )
             expV = exp(-10*ShiftStick );
-            betaTemp = StickHori*(0.5+1/(1+expV));            
+            betaTemp = StickHori* 0.1; %(0.5+1/(1+expV));            
         end
         
     	temp = sparse(3,NuSupSize);
@@ -918,9 +918,10 @@ end
 % porject the ray on planes to generate the FitDepth
 PlanePara = reshape(PlanePara,3,[]);
 
-for s = FgSupidx{1}
-    PlanePara(1,Sup2Para(1,s)) = 0;
-end
+%Experiment- Abhijit
+% for s = FgSupidx{1}
+%     PlanePara(1,Sup2Para(1,s)) = 0;
+% end
 
 % inpaint the plane parameters
 %[ PlanePara ] = inpaintAlpha( Default, fgmask, FgSupidx{1}, PlanePara, SupEpand );
