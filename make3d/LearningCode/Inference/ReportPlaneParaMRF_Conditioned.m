@@ -282,11 +282,11 @@ for i = NuSup
               		wei = 1;
             end
             
-%         % Do Check for forground superpixel
-%             if ( any(FgSupidx{1} == i) || any(FgSupidx{1} == j ) )
-%                 expV = exp(-10*ShiftCoP );
-%               	wei = 1/(1+expV);            
-%             end
+        % Do Check for forground superpixel
+            if ( any(FgSupidx{1} == i) || any(FgSupidx{1} == j ) )
+                expV = exp(-10*ShiftCoP );
+              	wei = 0;            
+            end
 	
             if ExtractRelationInfo == 1; % keep record
                 WeiM(i,j) = wei;
@@ -432,14 +432,22 @@ for i = addedIndexList
     	Target(2) = Sup2Para(Sup(j));
     	rayBoundary(:,1) =  RayOri(:,i);
     	rayBoundary(:,2) =  RayOri(:,i);
-    	if MultiScaleFlag
+    	
+        if MultiScaleFlag
           	vector = (MultiScaleSupTable(Sup2Para(Sup(i)),2:end) == MultiScaleSupTable(Sup2Para(Sup(j)),2:end));
           	expV = exp(-10*(WeiV*vector' + ShiftStick) );
        		betaTemp = StickHori*(0.5+1/(1+expV));
        		% therr should always be sticking (know don't care about occlusion)
     	else
        		betaTemp = StickHori;
-    	end
+        end
+        
+        % Do Check for forground superpixel
+        if ( any(FgSupidx{1} == i) || any(FgSupidx{1} == j ) )
+            expV = exp(-10*ShiftStick );
+            betaTemp = StickHori* 0.1; %(0.5+1/(1+expV));            
+        end
+        
     	temp = sparse(3,NuSupSize);
     	temp(:,Target(1)) = rayBoundary(:,1);
     	HoriStickM_i = [HoriStickM_i; betaTemp*temp(:)'];
@@ -912,6 +920,13 @@ PlanePara = reshape(PlanePara,3,[]);
 
 
 % ===============3D inpainting stuff starts====================
+
+%Experiment- Abhijit
+% for s = FgSupidx{1}
+%     PlanePara(1,Sup2Para(1,s)) = 0;
+% end
+
+
 % break the current superpixels
 [ PlanePara Sup2Para SupEpand SupOri div_newfgmaskidx lr_sups ] = breakSups( Default, FgSupidx{1}, PlanePara, Sup2Para, SupEpand, SupOri );
 
