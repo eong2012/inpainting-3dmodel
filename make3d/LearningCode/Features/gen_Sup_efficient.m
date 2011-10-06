@@ -74,6 +74,8 @@ else
    Default.SegHoriXSize = HoriXSizeHiREs-4;
 end
 
+FgSupidx = {};
+
 % generate superpixel of each image
 for j = 1:3% number of scale of superpixel
             
@@ -96,13 +98,15 @@ for j = 1:3% number of scale of superpixel
         
         % Arrange the superpixel index in order
         if j == 1 % For the smallest Scale 
-           % Downsample the FG mask with the image
-           fgmask = imresize(fgmask,[Default.SegVertYSize Default.SegHoriXSize],'nearest');
-               
-           % if no preprocessing done we need to fix SPs
-           if Default.SwitchPreprocessVsSP == 0
-               % 3D inpainting -> adjust SPs to make sure they follow FG boundaries
-               a = adjustSup(a, fgmask);
+           if Default.Do3DInpainting == 1
+               % Downsample the FG mask with the image
+               fgmask = imresize(fgmask,[Default.SegVertYSize Default.SegHoriXSize],'nearest');
+
+               % if no preprocessing done we need to fix SPs
+               if Default.SwitchPreprocessVsSP == 0
+                   % 3D inpainting -> adjust SPs to make sure they follow FG boundaries
+                   a = adjustSup(a, fgmask);
+               end
            end
            
            % renumber the labels (according to the number of unique labels)
@@ -115,13 +119,17 @@ for j = 1:3% number of scale of superpixel
            %Downsample to size as prediected depth map
            Sup{j} = imresize(MedSup,[Default.VertYNuDepth Default.HoriXNuDepth],'nearest');
 
-           % Downsample the FG mask with the image
-           fgmask_rsz = imresize(fgmask,[Default.VertYNuDepth Default.HoriXNuDepth],'nearest');
-           
-           % if no preprocessing done we need to fix SPs
-           if Default.SwitchPreprocessVsSP == 0
-               % 3D inpainting -> adjust SPs to make sure they follow FG boundaries
-               Sup{j} = adjustSup(Sup{j}, fgmask_rsz);
+           if Default.Do3DInpainting == 1
+               % Downsample the FG mask with the image
+               fgmask_rsz = imresize(fgmask,[Default.VertYNuDepth Default.HoriXNuDepth],'nearest');
+
+               % if no preprocessing done we need to fix SPs
+               if Default.SwitchPreprocessVsSP == 0
+                   % 3D inpainting -> adjust SPs to make sure they follow FG boundaries
+                   Sup{j} = adjustSup(Sup{j}, fgmask_rsz);
+               end
+           else
+               fgmask_rsz = [];
            end
             
            % clean superpixel section ====================================================================
@@ -136,7 +144,7 @@ for j = 1:3% number of scale of superpixel
            a = imresize(a,[Default.VertYNuDepth Default.HoriXNuDepth],'nearest');
            
            % if no preprocessing done we need to fix SPs
-           if Default.SwitchPreprocessVsSP == 0
+           if Default.SwitchPreprocessVsSP == 0 && Default.Do3DInpainting == 1
                % 3D inpainting -> adjust SPs to make sure they follow FG boundaries
                a = adjustSup(a, fgmask_rsz);
            end
@@ -148,9 +156,11 @@ for j = 1:3% number of scale of superpixel
            Sup{j} = full(SparseIndex(a));
         end
         
-        % get the FG indexes
-        temp = Sup{j}(fgmask_rsz);
-        FgSupidx{j} = unique(temp)';
+        if Default.Do3DInpainting == 1
+            % get the FG indexes
+            temp = Sup{j}(fgmask_rsz);
+            FgSupidx{j} = unique(temp)';
+        end
         
         clear a SparseIndex Unique_a ma;
 

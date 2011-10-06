@@ -283,7 +283,7 @@ for i = NuSup
             end
             
         % Do Check for forground superpixel
-            if ( any(FgSupidx{1} == i) || any(FgSupidx{1} == j ) )
+            if Default.Do3DInpainting == 1 && ( any(FgSupidx{1} == i) || any(FgSupidx{1} == j ) )
                 expV = exp(-10*ShiftCoP );
               	wei = 0;            
             end
@@ -443,7 +443,7 @@ for i = addedIndexList
         end
         
         % Do Check for forground superpixel
-        if ( any(FgSupidx{1} == i) || any(FgSupidx{1} == j ) )
+        if Default.Do3DInpainting == 1 && ( any(FgSupidx{1} == i) || any(FgSupidx{1} == j ) )
             expV = exp(-10*ShiftStick );
             betaTemp = StickHori* 0.1; %(0.5+1/(1+expV));            
         end
@@ -920,21 +920,23 @@ PlanePara = reshape(PlanePara,3,[]);
 
 
 % ===============3D inpainting stuff starts====================
-
 %Experiment- Abhijit
 % for s = FgSupidx{1}
 %     PlanePara(1,Sup2Para(1,s)) = 0;
 % end
 
+if Default.Do3DInpainting == 1
+    % break the current superpixels
+    [ PlanePara Sup2Para SupEpand SupOri div_newfgmaskidx lr_sups ] = breakSups( Default, FgSupidx{1}, PlanePara, Sup2Para, SupEpand, SupOri );
 
-% break the current superpixels
-[ PlanePara Sup2Para SupEpand SupOri div_newfgmaskidx lr_sups ] = breakSups( Default, FgSupidx{1}, PlanePara, Sup2Para, SupEpand, SupOri );
+    % inpaint alpha values
+    [ PlanePara ] = inpaintAlpha( Default, PlanePara, Sup2Para, SupEpand, div_newfgmaskidx, lr_sups );
 
-% inpaint alpha values
-[ PlanePara ] = inpaintAlpha( Default, PlanePara, Sup2Para, SupEpand, div_newfgmaskidx, lr_sups );
-
-% inpaint appearance
-[ inpainted_img ] = inpaintAppearance( Default, img, SupEpand, div_newfgmaskidx, lr_sups );
+    % inpaint appearance
+    [ inpainted_img ] = inpaintAppearance( Default, img, SupEpand, div_newfgmaskidx, lr_sups );
+else
+    inpainted_img = img;
+end
 % ===============3D inpainting stuff ends====================
 
 

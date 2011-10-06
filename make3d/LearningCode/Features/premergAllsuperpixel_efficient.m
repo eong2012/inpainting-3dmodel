@@ -96,7 +96,7 @@ for i=NuSup
                mask_dilate(mask) = 0;
 
                % if no preprocessing done we need to avoid merging with FG
-               if Default.SwitchPreprocessVsSP == 0
+               if Default.SwitchPreprocessVsSP == 0 && Default.Do3DInpainting == 1
                    % avoid combining SP with the FG
                    mask_dilate(fgmask) = 0;
                    

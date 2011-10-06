@@ -115,13 +115,19 @@ end
 % Image loading
 fprintf('Loading the images...               ');
 img = imread(ImgPath);
-fgmask = imread(fgMaskPath);
+
+if Default.Do3DInpainting == 1
+    fgmask = imread(fgMaskPath);
+else
+    fgmask = [];
+end
+    
 
 % dilate the mask
 %fgmask = imdilate(fgmask, Default.FGDilationMask);
 
 % if switch to do preprocessing instead of fixing the SPs
-if Default.SwitchPreprocessVsSP
+if Default.SwitchPreprocessVsSP && Default.Do3DInpainting == 1
    img(repmat(fgmask,[1 1 3])) = 0;
 end
 
