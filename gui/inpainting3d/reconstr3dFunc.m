@@ -28,16 +28,19 @@ function [ vrml_filepath medsup_filepath ] = reconstr3d( input_im, params, handl
     filename = [filename '.png'];
     imwrite(input_im, filename);
     
+    run_id = sprintf('gui_test_%s', sprintf('_%.0f',clock));
+    
     if strcmp(handles.user_data.inpainting_exec_type, 'MATLAB')
         exec_cmd = handles.user_data.reconstr3d_exec;
-        exec_cmd = regexprep(exec_cmd, '\[input_filepath\]', ['''' filename '''']);
-        exec_cmd = regexprep(exec_cmd, '\[output_path\]', '''''');
         
         params_list = '';
         for idx = 1:length(handles.user_data.reconstr3d_params)
             params_list = [params_list ', ' handles.user_data.reconstr3d_params{idx}];
         end
         exec_cmd = regexprep(exec_cmd, '\[params\]', params_list);
+        exec_cmd = regexprep(exec_cmd, '\[input_filepath\]', ['''' filename '''']);
+        exec_cmd = regexprep(exec_cmd, '\[output_path\]', '''''');
+        exec_cmd = regexprep(exec_cmd, '\[output_id\]', run_id);
     else
         errordlg('Execution style other than MATLAB not implemented', 'reconstr3dFunc:NotImpl', 'modal');
         return;
@@ -65,8 +68,8 @@ function [ vrml_filepath medsup_filepath ] = reconstr3d( input_im, params, handl
     end
     
     % store the output filepaths
-    vrml_filepath = fullfile(pwd, ['_' regexprep(handles.user_data.reconstr3d_params{1},'''','') '.wrl']);
-    medsup_filepath = fullfile(pwd, ['_' regexprep(handles.user_data.reconstr3d_params{1},'''','') '.ppm']);
+    vrml_filepath = fullfile(pwd, ['_' run_id '.wrl']);
+    medsup_filepath = fullfile(pwd, ['_' run_id '.ppm']);
 
     % somethings wrong with the jpg file written (rewrite it)
 %     [path filename] = fileparts(vrml_filepath);

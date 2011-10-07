@@ -41,14 +41,14 @@ function [ handles ] = setUserDataDefaults( handles )
     
     user_data.reconstr3d_exec = 'OneShot3dEfficient([input_filepath], [output_path] [params]);';
     user_data.reconstr3d_exec_type = 'MATLAB';
-    user_data.reconstr3d_params = {'''''', '''gui_test'''};
+    user_data.reconstr3d_params = {'''''', '''[output_id]'''};
     user_data.reconstr3d_run_dir = fullfile(root_path, 'make3d', 'scratch');
     user_data.reconstr3d_prerun_cmds = {'addpath ../LearningCode', 'InitialPath(false);'};
     user_data.reconstr3d_postrun_cmds = {};
     
     user_data.ourreconstr3d_exec = 'OneShot3dEfficient([input_filepath], [output_path], [mask_filepath] [params]);';
     user_data.ourreconstr3d_exec_type = 'MATLAB';
-    user_data.ourreconstr3d_params = {'''gui_test'''};
+    user_data.ourreconstr3d_params = {'''[output_id]'''};
     user_data.ourreconstr3d_run_dir = fullfile(root_path, 'make3d', 'scratch');
     user_data.ourreconstr3d_prerun_cmds = {'addpath ../LearningCode', 'InitialPath(false);'};
     user_data.ourreconstr3d_postrun_cmds = {};

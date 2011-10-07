@@ -152,9 +152,9 @@ Sup2Para(NuSup) = 1:NuSupSize;
 % ========================================================================
 
 
-
-[SupNeighborTable ] = FixSupNeighbours( Default, FgSupidx{1}, SupNeighborTable, Sup2Para, SupEpand, SupOri );
-
+if Default.Do3DInpainting == 1
+    [SupNeighborTable ] = FixSupNeighbours( Default, FgSupidx{1}, SupNeighborTable, Sup2Para, SupEpand, SupOri );
+end
 
 
 
