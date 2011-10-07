@@ -32,7 +32,7 @@ function [ handles ] = setUserDataDefaults( handles )
     user_data.viewer3d_exec_type = 'SYSTEM';
     user_data.viewer3d_params = {};
     
-    user_data.inpainting_exec = '[[inpainted_im],[input_im],[inpaint_mask]] = inpaint([input_im], [inpaint_mask] [params]);';
+    user_data.inpainting_exec = '[[inpainted_im],[input_im],[inpaint_mask]] = inpaint_orig([input_im], [inpaint_mask] [params]);';
     user_data.inpainting_exec_type = 'MATLAB';
     user_data.inpainting_params = {'[0,0,0]'};
     user_data.inpainting_run_dir = fullfile(root_path, 'criminisi_inpainting');
