@@ -7,3 +7,6 @@ The output are stored in VRML (*.wrl) files. We have configured our VRML viewer 
 You can use any other viewer also. The output reconstruction (*.wrl) file of the algorithm is stored in make3d/scratch folder.
 
 Please see our project report to see all the references and open source codes, we have used for this system.
+We make use of make3D code available here: http://make3d.cs.cornell.edu/code.html
+We also make use of Criminisi's inpainting code written by Sooraj Bhat: http://www.cc.gatech.edu/~sooraj/inpainting/ 
+
