@@ -1,23 +1,9 @@
-1. Create a ~/.netrc file:
-machine code.google.com
-login [gmail address]
-password [google code password]
+You can run our program by running inpaint.m in folder from MATLAB. The program also takes care of all compilation issues, provided you have configured MEX in your MATLAB for C++ bindings. We have tested our code on a Ubuntu m/c with MEX configured to use a GCC compiler.
 
-Your Google code password is at https://code.google.com/hosting/settings
+Using the gui is very straightforward and self-explanatory. You can find some example images to play with in the /data folder.
 
-2. Pull code:
-git clone https://[your Google ID]@code.google.com/p/inpainting-3dmodel/ .
+The output are stored in VRML (*.wrl) files. We have configured our VRML viewer to viw3dScene (http://castle-engine.sourceforge.net/view3dscene.php). We assume viw3dScene is installed and exists in the system $PATH.
 
-3. The code has two directories currently:
-./criminisi_inpainting - Criminisi 2003~4 code for inpainting\obj filling
-./make3d - saxena 2005~9 code for single image 3D reconstruction
+You can use any other viewer also. The output reconstruction (*.wrl) file of the algorithm is stored in make3d/scratch folder.
 
-I have tried to remove around 400Megs of data from these directories and shifted it to [dropbox]/CS7495_Proj1/Data. I have also created a gatech_data directory to hold any data we collect.
-
-
-RULES OF THUMB: 
-* Do not dumb data on the git repository - it will kill the space we have!
-* most of the git stuff can be conveniently done through the "git gui" command.
-* Maintain all data (like images we are using) on Dropbox.
-
-Natesh hasn't read this!!!
+Please see our project report to see all the references and open source codes, we have used for this system.
