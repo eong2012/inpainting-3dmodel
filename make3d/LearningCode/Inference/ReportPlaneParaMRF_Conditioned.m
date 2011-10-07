@@ -151,6 +151,13 @@ Sup2Para = sparse(1,max(Sup(:)));
 Sup2Para(NuSup) = 1:NuSupSize;
 % ========================================================================
 
+
+
+[SupNeighborTable ] = FixSupNeighbours( Default, FgSupidx{1}, SupNeighborTable, Sup2Para, SupEpand, SupOri );
+
+
+
+
 % =================please ignore here since StraightLineTable = [], NuLine = 0 ========
 % constructiion of the Straight line prior matrix Will be add in the CoPlane matrix
 NuLine = size(StraightLineTable,2);
@@ -282,7 +289,7 @@ for i = NuSup
               		wei = 1;
             end
             
-        % Do Check for forground superpixel
+        %Do Check for forground superpixel
             if Default.Do3DInpainting == 1 && ( any(FgSupidx{1} == i) || any(FgSupidx{1} == j ) )
                 expV = exp(-10*ShiftCoP );
               	wei = 0;            
@@ -445,7 +452,7 @@ for i = addedIndexList
         % Do Check for forground superpixel
         if Default.Do3DInpainting == 1 && ( any(FgSupidx{1} == i) || any(FgSupidx{1} == j ) )
             expV = exp(-10*ShiftStick );
-            betaTemp = StickHori* 0.1; %(0.5+1/(1+expV));            
+            betaTemp = StickHori*(0.5+1/(1+expV));            
         end
         
     	temp = sparse(3,NuSupSize);
