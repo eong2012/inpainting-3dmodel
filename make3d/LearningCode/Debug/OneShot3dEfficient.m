@@ -116,6 +116,10 @@ end
 fprintf('Loading the images...               ');
 img = imread(ImgPath);
 
+if isempty(fgMaskPath)
+    Default.Do3DInpainting = 0;
+end
+
 if Default.Do3DInpainting == 1
     fgmask = imread(fgMaskPath);
 else

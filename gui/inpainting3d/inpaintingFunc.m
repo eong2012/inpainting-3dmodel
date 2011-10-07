@@ -21,7 +21,7 @@ function [ inpainted_im input_im inpaint_mask ] = inpainting( input_im, input_ma
     input_im = imresize(input_im, scale_value);
     inpaint_mask = imresize(input_mask, scale_value);
     
-    if strcmp(handles.user_data.inpainting_exec_type, 'MATLAB')
+    if strcmp(handles.user_data.ourreconstr3d_exec_type, 'MATLAB')
         exec_cmd = handles.user_data.inpainting_exec;
         exec_cmd = regexprep(exec_cmd, '\[inpainted_im\]', 'inpainted_im');
         exec_cmd = regexprep(exec_cmd, '\[input_im\]', 'input_im');

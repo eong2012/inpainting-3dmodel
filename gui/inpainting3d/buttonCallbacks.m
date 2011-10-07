@@ -99,6 +99,7 @@ function btn_load_mask_Callback(hObject, eventdata, handles)
     globalGuiUtils('enableDisableSliderImFG', handles, 1);
     globalGuiUtils('enableDisableInpaintingPanel', handles, 1);
     globalGuiUtils('enableDisable3DReconstrPanel', handles, 1);
+    globalGuiUtils('enableDisableOur3DReconstrPanel', handles, 1);
     
     % update handles structure
     guidata(hObject, handles);

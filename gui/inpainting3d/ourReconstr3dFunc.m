@@ -1,4 +1,4 @@
-function [ varargout ] = reconstr3dFunc( varargin )
+function [ varargout ] = ourReconstr3dFunc( varargin )
 % Inpainting function
 %   first parameter should be the function name; following that all
 %   parameters are sent as parameters to the function
@@ -11,27 +11,29 @@ function [ varargout ] = reconstr3dFunc( varargin )
 end
 
 
-function [ vrml_filepath medsup_filepath ] = reconstr3d( input_im, params, handles )
+function [ vrml_filepath output_filepath medsup_filepath ] = reconstr3d( input_im, mask_im, params, handles )
 % main function that calls 3D reconstruction code
 
     % expand params back to variables
-    do_inpainting = params{1};
+    %
     
     curr_path = pwd;
     cd(handles.user_data.reconstr3d_run_dir);
     
-    % write inpute file temp path
+    % write input file temp path
     [temp filename] = fileparts(handles.user_data.filepath_input_im);
-    if do_inpainting
-        filename = [filename '_inp'];
-    end
     filename = [filename '.png'];
     imwrite(input_im, filename);
     
-    if strcmp(handles.user_data.inpainting_exec_type, 'MATLAB')
-        exec_cmd = handles.user_data.reconstr3d_exec;
+    [temp filename_mask] = fileparts(handles.user_data.filepath_input_im);
+    filename_mask = [filename_mask '_fg_mask.png'];
+    imwrite(mask_im, filename_mask);
+    
+    if strcmp(handles.user_data.reconstr3d_exec_type, 'MATLAB')
+        exec_cmd = handles.user_data.ourreconstr3d_exec;
         exec_cmd = regexprep(exec_cmd, '\[input_filepath\]', ['''' filename '''']);
         exec_cmd = regexprep(exec_cmd, '\[output_path\]', '''''');
+        exec_cmd = regexprep(exec_cmd, '\[mask_filepath\]', ['''' filename_mask '''']);
         
         params_list = '';
         for idx = 1:length(handles.user_data.reconstr3d_params)
@@ -67,6 +69,7 @@ function [ vrml_filepath medsup_filepath ] = reconstr3d( input_im, params, handl
     % store the output filepaths
     vrml_filepath = fullfile(pwd, ['_' regexprep(handles.user_data.reconstr3d_params{1},'''','') '.wrl']);
     medsup_filepath = fullfile(pwd, ['_' regexprep(handles.user_data.reconstr3d_params{1},'''','') '.ppm']);
+    output_filepath = fullfile(pwd, ['_' regexprep(handles.user_data.ourreconstr3d_params{1},'''','') '.jpg']);
 
     % somethings wrong with the jpg file written (rewrite it)
 %     [path filename] = fileparts(vrml_filepath);
@@ -77,8 +80,8 @@ end
 
 
 
-function [ params ] = createInputParamsCell(do_inpainting)
+function [ params ] = createInputParamsCell()
 % creates a cell array containing all the parameter values for 3D reconstr
 
-    params = {do_inpainting};
+    params = {};
 end

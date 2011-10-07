@@ -32,7 +32,7 @@ function [ handles ] = setUserDataDefaults( handles )
     user_data.viewer3d_exec_type = 'SYSTEM';
     user_data.viewer3d_params = {};
     
-    user_data.inpainting_exec = '[[inpainted_im],[input_im],[inpaint_mask]] = inpaint([input_im],[inpaint_mask] [params]);';
+    user_data.inpainting_exec = '[[inpainted_im],[input_im],[inpaint_mask]] = inpaint([input_im], [inpaint_mask] [params]);';
     user_data.inpainting_exec_type = 'MATLAB';
     user_data.inpainting_params = {'[0,0,0]'};
     user_data.inpainting_run_dir = fullfile(root_path, 'criminisi_inpainting');
@@ -41,10 +41,17 @@ function [ handles ] = setUserDataDefaults( handles )
     
     user_data.reconstr3d_exec = 'OneShot3dEfficient([input_filepath], [output_path] [params]);';
     user_data.reconstr3d_exec_type = 'MATLAB';
-    user_data.reconstr3d_params = {'''gui_test'''};
+    user_data.reconstr3d_params = {'''''', '''gui_test'''};
     user_data.reconstr3d_run_dir = fullfile(root_path, 'make3d', 'scratch');
     user_data.reconstr3d_prerun_cmds = {'addpath ../LearningCode', 'InitialPath(false);'};
     user_data.reconstr3d_postrun_cmds = {};
+    
+    user_data.ourreconstr3d_exec = 'OneShot3dEfficient([input_filepath], [output_path], [mask_filepath] [params]);';
+    user_data.ourreconstr3d_exec_type = 'MATLAB';
+    user_data.ourreconstr3d_params = {'''gui_test'''};
+    user_data.ourreconstr3d_run_dir = fullfile(root_path, 'make3d', 'scratch');
+    user_data.ourreconstr3d_prerun_cmds = {'addpath ../LearningCode', 'InitialPath(false);'};
+    user_data.ourreconstr3d_postrun_cmds = {};
     
     user_data.temp_dir = 'sfsd';
     
@@ -148,4 +155,6 @@ function [ handles ] = reInitOutputs( handles )
     handles.user_data.reconstr3d_vrml_output_params = {};
     handles.user_data.reconstr3d_inpaint_output = [];
     handles.user_data.reconstr3d_inpaint_output_params = {};
+    handles.user_data.ourreconstr3d_inpaint_output = [];
+    handles.user_data.ourreconstr3d_inpaint_output_params = {};
 end

@@ -58,6 +58,11 @@ function [ handles ] = initGui( handles, hObject, eventdata )
     set(handles.pushbutton_3dreconstr_exec, 'Callback', @(hObject,eventdata) reconstr3DGuiCallbacks('pushbutton_3dreconstr_exec_Callback', hObject, eventdata, guidata(hObject)) );
     set(handles.pushbutton_3dreconstr_vrml, 'Callback', @(hObject,eventdata) reconstr3DGuiCallbacks('pushbutton_3dreconstr_view_Callback', hObject, eventdata, guidata(hObject)) );
     
+    % Set callbacks for our 3D reconstruction GUI
+    set(handles.pushbutton_our3dreconstr_exec, 'Callback', @(hObject,eventdata) ourReconstr3DGuiCallbacks('pushbutton_our3dreconstr_exec_Callback', hObject, eventdata, guidata(hObject)) );
+    set(handles.pushbutton_our3dreconstr_vrml, 'Callback', @(hObject,eventdata) ourReconstr3DGuiCallbacks('pushbutton_our3dreconstr_view_Callback', hObject, eventdata, guidata(hObject)) );
+    set(handles.pushbutton_our3dreconstr_image, 'Callback', @(hObject,eventdata) ourReconstr3DGuiCallbacks('pushbutton_our3dreconstr_image_Callback', hObject, eventdata, guidata(hObject)) );
+    
     % reset to the state when a new image is being loaded
     [ handles ] = guiDataResetBeforeNewIm(handles);
 end
@@ -75,8 +80,9 @@ function [ handles ] = guiDataResetBeforeNewIm(handles)
     % disable the 3D reconstruction objects
     enableDisable3DReconstrPanel(handles, 0);
     
-    % disable the VRML button
-    set(handles.pushbutton_openvrml, 'Enable','off');
+    % disable the our 3D reconstruction objects
+    enableDisableOur3DReconstrPanel(handles, 0);
+    
     % disable the fg mask button
     set(handles.pushbutton_fgmask, 'Enable','off');
     
@@ -125,6 +131,18 @@ function enableDisable3DReconstrPanel(handles, enable)
         set(handles.text_3dreconstr_inp_scaling, 'Enable','off');
         set(handles.edit_3dreconstr_inp_scale, 'Enable','off');
     end
+end
+
+
+function enableDisableOur3DReconstrPanel(handles, enable)
+% enable or disable the slider controls
+    
+    enable = enableParamConvert(enable);
+    recursiveHandleEnable(get(handles.uipanel_ourmethod,'Children'), enable);
+    
+    % deactive view VRML button
+    set(handles.pushbutton_our3dreconstr_vrml, 'Enable','off');
+    set(handles.pushbutton_our3dreconstr_image, 'Enable','off');
 end
 
 
