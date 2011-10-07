@@ -65,6 +65,16 @@ function [ handles ] = initGui( handles, hObject, eventdata )
     
     % reset to the state when a new image is being loaded
     [ handles ] = guiDataResetBeforeNewIm(handles);
+    
+    % compile any code needed
+    curr_dir = pwd;
+    cd(handles.user_data.inpainting_run_dir);
+    mex bestexemplarhelper.c
+    cd(handles.user_data.ourreconstr3d_run_dir);
+    addpath ../LearningCode
+    InitialPath(true);
+    cd(curr_dir);
+%     mex bestexemplarhelper.c
 end
 
 
