@@ -37,7 +37,7 @@ function [ handles ] = setUserDataDefaults( handles )
     user_data.inpainting_params = {'[0,0,0]'};
     user_data.inpainting_run_dir = fullfile(root_path, 'criminisi_inpainting');
     user_data.inpainting_prerun_cmds = {};
-    user_data.inpainting_postrun_cmds = {'inpainted_im = uint8(inpainted_im);'};
+    user_data.inpainting_postrun_cmds = {'inpainted_im = im2uint8(inpainted_im);'};
     
     user_data.reconstr3d_exec = 'OneShot3dEfficient([input_filepath], [output_path] [params]);';
     user_data.reconstr3d_exec_type = 'MATLAB';
